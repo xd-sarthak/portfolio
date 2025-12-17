@@ -58,7 +58,7 @@ export const metadata: Metadata = {
       "Explore projects and engineering notes by Sarthak Srivastav — Software Developer focused on Go, Next.js, Prisma and PostgreSQL.",
     images: [
       {
-        url: "/og-image.png",
+        url: "https://sarthaksri.vercel.app/og-image.png",
         width: 1200,
         height: 630,
         alt: "Sarthak Srivastav Portfolio",
@@ -71,7 +71,7 @@ export const metadata: Metadata = {
       "Sarthak Srivastav — Software Developer (Typescript, Go, Next.js, Node.js, Postgresql)",
     description:
       "Software Developer building production-ready web apps with Go, Next.js, Prisma and PostgreSQL. See projects, notes and deployment tips.",
-    images: ["/og-image.png"],
+    images: ["https://sarthaksri.vercel.app/og-image.png"],
   },
   robots: {
     index: true,

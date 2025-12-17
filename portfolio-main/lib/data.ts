@@ -1164,8 +1164,8 @@ function greet(name) {
   };
 }
 
-const sayHello = greet("Abhoy");
-sayHello();  // Output: Hello Abhoy
+const sayHello = greet("Sarthak");
+sayHello();  // Output: Hello Sarthak
 \`\`\`
 
 Even though \`greet()\` has finished executing, the inner function still remembers the value of \`name\`. That's closure in action. This is why closures are often described as functions bundled with lexical scope.
