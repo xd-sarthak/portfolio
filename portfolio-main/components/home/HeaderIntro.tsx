@@ -22,7 +22,7 @@ export default function HeaderIntro() {
             Software Developer building fast and scalable digital products using{" "}
             <span className="text-foreground">Next.js</span>,{" "}
             <span className="text-foreground">TypeScript</span>,{" "}
-            <span className="text-foreground">Node.js</span>,and{" "}
+            <span className="text-foreground">Node.js</span>, and{" "}
             <span className="text-foreground">PostgreSQL</span>.
             <Tooltip>
               <TooltipTrigger asChild>

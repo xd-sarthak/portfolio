@@ -1,7 +1,7 @@
 // SEO utilities and metadata generation
 
 const DEFAULT_BASE_URL =
-  process.env.NEXT_PUBLIC_BASE_URL || "https://www.sarthak.xyz";
+  process.env.NEXT_PUBLIC_BASE_URL || "https://sarthaksri.vercel.app";
 
 const AUTHOR_NAME = "Sarthak Srivastav";
 const AUTHOR_EMAIL = "sarthak.srivastav0203@gmail.com";

@@ -33,7 +33,7 @@ export const metadata: Metadata = {
   authors: [
     {
       name: "Sarthak Srivastav",
-      url: "https://abhoy.xyz",
+      url: "https://sarthaksri.vercel.app",
     },
   ],
   creator: "Sarthak Srivastav",
@@ -43,14 +43,14 @@ export const metadata: Metadata = {
     address: false,
     telephone: false,
   },
-  metadataBase: new URL("https://www.abhoy.xyz"),
+  metadataBase: new URL("https://sarthaksri.vercel.app"),
   alternates: {
-    canonical: "https://www.abhoy.xyz",
+    canonical: "https://sarthaksri.vercel.app",
   },
   openGraph: {
     type: "website",
     locale: "en_US",
-    url: "https://www.abhoy.xyz",
+    url: "https://sarthaksri.vercel.app",
     siteName: "Sarthak Srivastav Portfolio",
     title:
       "Sarthak Srivastav — Software Developer (Typescript, Go, Next.js, Node.js, Postgresql)",
@@ -104,18 +104,18 @@ export default function RootLayout({
 }>) {
   const personSchema = generateStructuredData("person", {
     name: "Sarthak Srivastav",
-    url: "https://www.abhoy.xyz",
+    url: "https://sarthaksri.vercel.app",
     email: "sarthak.srivastav0203@gmail.com",
     sameAs: [
-      "https://github.com/abhoy21",
-      "https://in.linkedin.com/in/abhoy-sarkar",
+      "https://github.com/xd-sarthak",
+      "https://www.linkedin.com/in/sarthak-srivastav-a51207257/",
       "https://www.youtube.com/shorts/nNH_S0kq3Sw?si=ezWg0XDpm-THAzJa",
     ],
   });
 
   const websiteSchema = generateStructuredData("website", {
     name: "Sarthak Srivastav Portfolio",
-    url: "https://www.abhoy.xyz",
+    url: "https://sarthaksri.vercel.app",
     description: "Portfolio of Sarthak Srivastav, a Software Developer.",
     authorName: "Sarthak Srivastav",
   });

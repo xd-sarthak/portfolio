@@ -12,7 +12,7 @@ User-agent: Googlebot
 Allow: /
 
 # Sitemap Declaration
-Sitemap: https://www.abhoy.xyz/sitemap.xml
+Sitemap: https://sarthaksri.vercel.app/sitemap.xml
 
 # Allow AI crawlers and LLMs (Opt-in for training)
 User-agent: GPTBot
