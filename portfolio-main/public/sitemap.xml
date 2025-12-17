@@ -1,0 +1,154 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
+  <!-- Core pages -->
+  <url>
+    <loc>https://www.abhoy.xyz/</loc>
+    <lastmod>2025-11-30T00:00:00+00:00</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>1.00</priority>
+  </url>
+
+  <url>
+    <loc>https://www.abhoy.xyz/blog/</loc>
+    <lastmod>2025-11-30T00:00:00+00:00</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.85</priority>
+  </url>
+
+  <url>
+    <loc>https://www.abhoy.xyz/projects/</loc>
+    <lastmod>2025-11-30T00:00:00+00:00</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.85</priority>
+  </url>
+
+  <!-- About page -->
+  <url>
+    <loc>https://www.abhoy.xyz/about-me/</loc>
+    <lastmod>2025-11-30T00:00:00+00:00</lastmod>
+    <changefreq>yearly</changefreq>
+    <priority>0.80</priority>
+  </url>
+
+  <!-- Project pages -->
+  <url>
+    <loc>https://www.abhoy.xyz/projects/pixel-art-editor</loc>
+    <lastmod>2025-11-30T00:00:00+00:00</lastmod>
+    <changefreq>yearly</changefreq>
+    <priority>0.70</priority>
+  </url>
+
+  <url>
+    <loc>https://www.abhoy.xyz/projects/mindsketch-collaborative-diagramming</loc>
+    <lastmod>2025-11-30T00:00:00+00:00</lastmod>
+    <changefreq>yearly</changefreq>
+    <priority>0.70</priority>
+  </url>
+
+  <url>
+    <loc>https://www.abhoy.xyz/projects/aipowered-content-generation-platform</loc>
+    <lastmod>2025-11-30T00:00:00+00:00</lastmod>
+    <changefreq>yearly</changefreq>
+    <priority>0.70</priority>
+  </url>
+
+  <url>
+    <loc>https://www.abhoy.xyz/projects/expense-tracker-mobile-app</loc>
+    <lastmod>2025-11-30T00:00:00+00:00</lastmod>
+    <changefreq>yearly</changefreq>
+    <priority>0.70</priority>
+  </url>
+
+  <url>
+    <loc>https://www.abhoy.xyz/projects/second-brain</loc>
+    <lastmod>2025-11-30T00:00:00+00:00</lastmod>
+    <changefreq>yearly</changefreq>
+    <priority>0.70</priority>
+  </url>
+
+  <!-- Blog posts -->
+  <url>
+    <loc>https://www.abhoy.xyz/blog/understanding-monorepo-and-turborepo</loc>
+    <lastmod>2025-01-01T00:00:00+00:00</lastmod>
+    <changefreq>yearly</changefreq>
+    <priority>0.80</priority>
+  </url>
+
+  <url>
+    <loc>https://www.abhoy.xyz/blog/devops-for-developers-smooth-deployment-workflows-github-actions</loc>
+    <lastmod>2025-03-01T00:00:00+00:00</lastmod>
+    <changefreq>yearly</changefreq>
+    <priority>0.80</priority>
+  </url>
+
+  <url>
+    <loc>https://www.abhoy.xyz/blog/real-time-collaboration-backend-communication-redis-worker-design</loc>
+    <lastmod>2025-03-01T00:00:00+00:00</lastmod>
+    <changefreq>yearly</changefreq>
+    <priority>0.80</priority>
+  </url>
+
+  <url>
+    <loc>https://www.abhoy.xyz/blog/javascript-event-loop-task-queue-deep-dive</loc>
+    <lastmod>2025-05-01T00:00:00+00:00</lastmod>
+    <changefreq>yearly</changefreq>
+    <priority>0.80</priority>
+  </url>
+
+  <url>
+    <loc>https://www.abhoy.xyz/blog/postgres-cli-commands-tips-and-best-practices</loc>
+    <lastmod>2025-06-01T00:00:00+00:00</lastmod>
+    <changefreq>yearly</changefreq>
+    <priority>0.80</priority>
+  </url>
+
+  <url>
+    <loc>https://www.abhoy.xyz/blog/javascript-console-logging-essentials-guide</loc>
+    <lastmod>2025-06-01T00:00:00+00:00</lastmod>
+    <changefreq>yearly</changefreq>
+    <priority>0.80</priority>
+  </url>
+
+  <url>
+    <loc>https://www.abhoy.xyz/blog/how-cors-works-under-the-hood</loc>
+    <lastmod>2025-07-01T00:00:00+00:00</lastmod>
+    <changefreq>yearly</changefreq>
+    <priority>0.80</priority>
+  </url>
+
+  <url>
+    <loc>https://www.abhoy.xyz/blog/mastering-javascript-closures-explained-with-examples</loc>
+    <lastmod>2025-07-01T00:00:00+00:00</lastmod>
+    <changefreq>yearly</changefreq>
+    <priority>0.80</priority>
+  </url>
+
+  <url>
+    <loc>https://www.abhoy.xyz/blog/building-rag-pipelines-with-langgraph-fastapi</loc>
+    <lastmod>2025-07-01T00:00:00+00:00</lastmod>
+    <changefreq>yearly</changefreq>
+    <priority>0.80</priority>
+  </url>
+
+  <url>
+    <loc>https://www.abhoy.xyz/blog/secure-cookie-based-authentication-typescript-refresh-access-tokens</loc>
+    <lastmod>2025-12-01T00:00:00+00:00</lastmod>
+    <changefreq>yearly</changefreq>
+    <priority>0.80</priority>
+  </url>
+
+  <url>
+    <loc>https://www.abhoy.xyz/blog/rise-of-coding-agents-developers-supervisors</loc>
+    <lastmod>2025-11-11T00:00:00+00:00</lastmod>
+    <changefreq>yearly</changefreq>
+    <priority>0.80</priority>
+  </url>
+
+  <url>
+    <loc>https://www.abhoy.xyz/blog/cve-2025-55182-react-server-functions-rce</loc>
+    <lastmod>2025-12-08T00:00:00+00:00</lastmod>
+    <changefreq>yearly</changefreq>
+    <priority>0.80</priority>
+  </url>
+
+</urlset>
