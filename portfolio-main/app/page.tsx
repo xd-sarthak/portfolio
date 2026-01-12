@@ -48,6 +48,26 @@ export default function Home() {
       slug: "coderevu-ai-pr-review",
     },
     {
+      name: "RunBook — Visual Workflow Execution Engine",
+      description:
+        "Built a visual workflow automation platform with webhook-triggered, AI-augmented execution using Next.js 15, React Flow, and Inngest for event-driven orchestration.",
+      tech: [
+        "Next.js 15",
+        "React 19",
+        "TypeScript",
+        "React Flow",
+        "Prisma",
+        "PostgreSQL",
+        "Inngest",
+        "tRPC",
+        "Gemini AI",
+        "OpenAI",
+      ],
+      github: "https://github.com/yourusername/runbook",
+      year: "2025",
+      slug: "runbook-workflow-engine",
+    },
+    {
       name: "Blogify — Distributed Blogging Platform",
       description:
         "Engineered a 3-service distributed backend architecture with async messaging and caching, achieving 99.9% message delivery reliability and reducing read latency to 4–6ms.",

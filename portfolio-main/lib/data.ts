@@ -72,6 +72,84 @@ The system indexes repositories asynchronously, retrieves relevant code context 
     featured: true,
   },
   {
+    slug: "runbook-workflow-engine",
+    name: "RunBook — Visual Workflow Execution Engine",
+    description:
+      "A full-stack workflow automation platform with webhook-triggered, AI-augmented execution. Built with Next.js 15, React Flow, Prisma, and Inngest for event-driven workflow orchestration.",
+    longDescription: `
+RunBook is a visual workflow execution engine demonstrating end-to-end system design—from database schema to real-time UI updates—for webhook-triggered, AI-augmented workflow automation.
+
+The platform enables users to build complex workflows using a node-based canvas, connect external services, and execute them automatically via webhooks or manual triggers.
+
+**System Architecture**
+
+The architecture follows a multi-layer design:
+- **Frontend**: React Flow canvas for visual workflow building, Jotai for state management, tRPC for type-safe API calls
+- **Backend**: Next.js API routes with tRPC, Inngest for event-driven execution
+- **Database**: PostgreSQL with Prisma ORM for workflows, nodes, and connections
+- **Real-time**: Inngest Realtime channels for execution status streaming
+- **AI Integration**: Vercel AI SDK with Gemini and OpenAI providers
+
+**Key Technical Decisions & Tradeoffs**
+
+**1. Inngest for Workflow Execution**
+Instead of building a custom queue/worker system, Inngest provides step-level execution with automatic retries, built-in observability, and realtime channels. This eliminated the need for Redis/queue infrastructure but introduced vendor dependency. The tradeoff was accepted because building equivalent functionality (Bull + Redis + custom retry logic + observability) would have tripled development time.
+
+**2. Topological Sort for Execution Order**
+Workflows are directed acyclic graphs (DAGs) where execution order is computed at runtime via topological sort. This ensures dependencies always run before dependents, handling arbitrary node connections. The O(V+E) runtime cost is acceptable for typical workflows (<50 nodes).
+
+**3. Handlebars for Context Templating**
+User-defined templates like \`{{stripe.eventType}}\` inject upstream node outputs into downstream configurations. Handlebars provides safe, well-known templating without arbitrary code execution. The limited expressiveness (no conditionals in templates) was accepted because workflow-level logic should be nodes, not template expressions.
+
+**4. Executor Registry Pattern**
+Node execution logic is decoupled via a registry mapping NodeType enum to executor functions. Adding new node types requires only adding an executor and component—the execution engine remains unchanged. This provides extensibility while maintaining type safety.
+
+**5. Realtime Status via Inngest Channels**
+Each node type publishes execution status (loading/success/error) through dedicated Inngest Realtime channels. This provides immediate user feedback without polling. The coupling between executors and channel definitions was accepted for easier tracing and debugging.
+
+**6. Prisma Schema Design**
+Separate Node and Connection tables reference Workflow, with node data stored as JSON for flexibility. Connections are explicit edges with fromNodeId, toNodeId, fromOutput, and toInput fields, supporting future multi-output nodes. Application-level Zod validation compensates for JSON column type safety loss.
+
+**Key Challenges**
+- Designing a flexible node execution system that supports arbitrary node types
+- Ensuring correct execution order in complex DAGs with multiple branches
+- Providing real-time feedback during long-running workflows
+- Handling errors and retries gracefully without blocking other workflows
+- Maintaining type safety across the full stack (database → API → UI)
+
+**Key Learnings**
+- Event-driven architectures with Inngest dramatically simplify async workflow execution
+- Topological sorting is essential for DAG-based workflow systems
+- React Flow provides excellent UX for node-based editors with minimal custom code
+- Type-safe APIs (tRPC) eliminate entire classes of runtime errors
+- Real-time channels improve UX significantly compared to polling
+
+**Impact**
+- Enabled webhook-triggered automation for external services (Stripe, GitHub, etc.)
+- Provided visual workflow building without code
+- Achieved reliable execution with automatic retries and error handling
+- Delivered real-time execution feedback for better user experience
+`,
+    tech: [
+      "Next.js 15",
+      "React 19",
+      "TypeScript",
+      "React Flow",
+      "Prisma",
+      "PostgreSQL",
+      "Inngest",
+      "tRPC",
+      "Jotai",
+      "better-auth",
+      "Vercel AI SDK",
+      "Gemini AI",
+      "OpenAI",
+    ],
+    github: "https://github.com/yourusername/runbook",
+    year: "2025",
+    featured: true,
+  },
+  {
     slug: "blogify-distributed-system",
     name: "Blogify — Distributed Blogging Platform",
     description:
