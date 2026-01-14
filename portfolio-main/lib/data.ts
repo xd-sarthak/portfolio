@@ -28,13 +28,21 @@ export interface BlogPost {
 export const projects: Project[] = [
   {
     slug: "coderevu-ai-pr-review",
-    name: "CodeRevU — AI-Powered GitHub PR Review SaaS",
+    name: "CodeRevU — AI-Powered GitHub PR Review ",
     description:
       "An AI-powered GitHub pull request review platform that automatically generates structured, actionable code reviews using Retrieval-Augmented Generation (RAG) and Gemini AI.",
     longDescription: `
 CodeRevU was built to eliminate repetitive manual pull request reviews by automating high-quality, context-aware feedback directly at the PR level.
 
 The system indexes repositories asynchronously, retrieves relevant code context using vector search, and generates structured review comments using Gemini AI.
+
+**System Architecture**
+
+CodeRevU operates on a sophisticated RAG pipeline:
+- Frontend: Next.js 16 App Router for a high-performance, server-rendered dashboard.
+- Backend & Orchestration: Inngest powers reliable, event-driven workflows (e.g., 'pr.created') that run asynchronously to handle long-running indexing tasks.
+- Data & Vector Store: PostgreSQL (via Prisma) stores user/project data, while Pinecone indexes code embeddings for semantic retrieval.
+- AI Engine: Google Gemini Pro generates code reviews based on retrieved contexts, grounded by static analysis data.
 
 **Key Challenges**
 - Indexing large repositories without blocking GitHub webhook flows.
@@ -68,6 +76,7 @@ The system indexes repositories asynchronously, retrieves relevant code context 
       "GitHub Webhooks",
     ],
     github: "https://github.com/xd-sarthak/CodeRevU",
+    link: "https://coderevu.vercel.app",
     year: "2025",
     featured: true,
   },
@@ -84,13 +93,12 @@ The platform enables users to build complex workflows using a node-based canvas,
 **System Architecture**
 
 The architecture follows a multi-layer design:
-- **Frontend**: React Flow canvas for visual workflow building, Jotai for state management, tRPC for type-safe API calls
-- **Backend**: Next.js API routes with tRPC, Inngest for event-driven execution
-- **Database**: PostgreSQL with Prisma ORM for workflows, nodes, and connections
-- **Real-time**: Inngest Realtime channels for execution status streaming
-- **AI Integration**: Vercel AI SDK with Gemini and OpenAI providers
+- Frontend: React Flow canvas for visual workflow building, Jotai for state management, tRPC for type-safe API calls
+- Backend: Next.js API routes with tRPC, Inngest for event-driven execution
+- Database: PostgreSQL with Prisma ORM for workflows, nodes, and connections
+- Real-time: Inngest Realtime channels for execution status streaming
+- AI Integration: Vercel AI SDK with Gemini and OpenAI providers
 
-**Key Technical Decisions & Tradeoffs**
 
 **1. Inngest for Workflow Execution**
 Instead of building a custom queue/worker system, Inngest provides step-level execution with automatic retries, built-in observability, and realtime channels. This eliminated the need for Redis/queue infrastructure but introduced vendor dependency. The tradeoff was accepted because building equivalent functionality (Bull + Redis + custom retry logic + observability) would have tripled development time.
@@ -159,6 +167,14 @@ Blogify was designed to explore real-world distributed system patterns using mic
 
 The system is split into User, Author, and Blog services communicating via RabbitMQ, with Redis used for caching and pub/sub invalidation.
 
+**System Architecture**
+
+Designed as a distributed system to handle high concurrency:
+- Services: Decomposed into discrete User, Author, and Blog microservices to isolate fault domains.
+- Message Broker: RabbitMQ handles asynchronous communication (e.g., "Post Created" events) to decouple service dependencies.
+- Caching Layer: Redis implements look-aside caching and Pub/Sub output caching to offload the primary database.
+- Persistence: MongoDB sharded clusters provide horizontal scalability for content-heavy workloads.
+
 **Key Challenges**
 - Designing message-driven workflows without tight coupling.
 - Maintaining cache consistency across services.
@@ -201,6 +217,14 @@ Streamify focuses on the backend challenges of real-time communication: signalin
 
 The system uses WebSockets for low-latency messaging and WebRTC for peer-to-peer video communication.
 
+**System Architecture**
+
+A hybrid real-time architecture optimized for latency:
+- Signaling: Custom Node.js/Socket.io signaling server negotiates WebRTC connection metadata (SDP, ICE candidates).
+- Media Transport: WebRTC establishes efficient P2P UDP data channels for video and audio streams.
+- State Management: Redis stores ephemeral presence data (online status, active rooms) for blazing-fast access.
+- Security: JWT-based handshake mechanism validates socket connections before upgrading protocols.
+
 **Key Challenges**
 - Managing real-time presence across multiple sessions.
 - Designing signaling flows for WebRTC.
@@ -236,6 +260,14 @@ The system uses WebSockets for low-latency messaging and WebRTC for peer-to-peer
 DrillWork is a comprehensive task management system built with a focus on role-based access control and dual authentication strategies.
 
 The system structures MongoDB models with Mongoose ODM using TypeScript and Zod validation to maintain data integrity across users, workspaces, projects, and tasks.
+
+**System Architecture**
+
+A secure, layered REST API architecture:
+- API Layer: Express.js with strict middleware chains for request validation (Zod) and authentication using Passport.js strategies.
+- Data Layer: MongoDB with Mongoose schemas enforces strict relationships between Users, Workspaces, and Tasks.
+- State Management: React frontend utilizes Zustand for lightweight, efficient global state management without boilerplate.
+- Security: Implements HttpOnly cookies and CSRF protection for secure session handling.
 
 **Key Features**
 - Workspace, project, and task management with hierarchical organization.
@@ -2170,25 +2202,25 @@ In five years, will manual coding feel as outdated as writing assembly does toda
 The answer depends on how willingly we embrace this new era, and how thoughtfully we implement it.
 `,
   },
-{
-  id: "12",
-  slug: "cve-2025-55182-react-server-functions-rce",
-  title:
-    "CVE-2025-55182 Explained: How a Prototype Pollution Flaw in React Server Functions Led to Critical RCE",
-  excerpt:
-    "A deep yet accessible breakdown of CVE-2025-55182 — a critical Remote Code Execution flaw in React Server Functions affecting frameworks like Next.js. Learn what CVEs are, how this vulnerability works, why it threatens real-world applications, and what developers must do to stay secure.",
-  date: "Dec 2025",
-  readTime: "10 min",
-  tags: [
-    "Security",
-    "React",
-    "Next.js",
-    "RCE",
-    "CVE",
-    "Web Application Security",
-  ],
-  featured: true,
-  content: `
+  {
+    id: "12",
+    slug: "cve-2025-55182-react-server-functions-rce",
+    title:
+      "CVE-2025-55182 Explained: How a Prototype Pollution Flaw in React Server Functions Led to Critical RCE",
+    excerpt:
+      "A deep yet accessible breakdown of CVE-2025-55182 — a critical Remote Code Execution flaw in React Server Functions affecting frameworks like Next.js. Learn what CVEs are, how this vulnerability works, why it threatens real-world applications, and what developers must do to stay secure.",
+    date: "Dec 2025",
+    readTime: "10 min",
+    tags: [
+      "Security",
+      "React",
+      "Next.js",
+      "RCE",
+      "CVE",
+      "Web Application Security",
+    ],
+    featured: true,
+    content: `
 # CVE-2025-55182 Explained: How a Prototype Pollution Flaw in React Server Functions Led to Critical RCE
 
 In late 2025, the JavaScript ecosystem faced one of its most severe security issues in recent years: **CVE-2025-55182**, a remote code execution vulnerability affecting **React Server Functions**, and by extension, frameworks like **Next.js 14+ and some versions of 15**.
@@ -2309,8 +2341,143 @@ React’s patches significantly improve safety, but developers must remain vigil
 **Source:**  
 Original research & PoC by msanft (GitHub: https://github.com/msanft/CVE-2025-55182.git).
 `,
-},
+  },
+  {
+    id: "6",
+    slug: "production-grade-rag-pipelines",
+    title: "Designing Production-Grade RAG Pipelines: What Actually Breaks in the Real World",
+    excerpt: "A practical breakdown of failure modes in RAG systems—retrieval drift, embedding mismatch, latency bottlenecks—and how to design pipelines that survive production load.",
+    date: "Dec 2025",
+    readTime: "12 min",
+    tags: ["RAG", "AI", "Vector Search", "System Design"],
+    featured: true,
+    content: `
+Retrieval-Augmented Generation (RAG) is easy to prototype but notoriously difficult to harden for production. A basic tutorial setup—PDF to chunks to vector DB to LLM—works fine for 10 documents. But when you scale to 10,000 documents with concurrent users, the cracks start to show.
 
+In this deep dive, I’ll walk through the specific points where standard RAG pipelines fail and how to engineer around them.
+
+## 1. The Retrieval Quality Bottleneck
+
+The most common failure mode isn't the LLM hallucinating—it's the retrieval step failing to find relevant context.
+
+### The Problem: Naive Chunking
+Splitting text by character count (e.g., every 500 chars) often severs semantic meaning. A header might end up in one chunk and its related content in another.
+
+### The Fix: Semantic Chunking & Sliding Windows
+Instead of hard breaks, use overlapping windows (e.g., 500 tokens with 50 overlap) to preserve context boundaries. Even better, use structure-aware chunking (Markdown/HTML parsing) to keep paragraphs and code blocks intact.
+
+## 2. Embedding Mismatch (The "Lost in Space" Problem)
+
+Your user asks "How do I reset my password?", but your vector DB returns results about "password security policies". Why? Because they share semantic similarity in vector space, even if they address different intents.
+
+### The Fix: Hybrid Search (Keywords + Vectors)
+Pure vector search captures *meaning*, but keyword search (BM25) captures *specificity*. A production pipeline must rank results using both.
+
+\`\`\`typescript
+// Pseudo-code for Hybrid Search
+const vectorResults = await pinecone.query({ vector: embedding, topK: 20 });
+const keywordResults = await elastic.search({ query: userInput, topK: 20 });
+const finalResults = rankFusion(vectorResults, keywordResults);
+\`\`\`
+
+## 3. The Latency Trap
+
+Chaining an embedding call (200ms) + vector search (100ms) + LLM generation (2s+) creates a sluggish UI.
+
+### The Fix: Optimistic UI & Streaming
+Never make the user stare at a spinner. streaming the response token-by-token is mandatory. Additionally, consider "pre-retrieval": start fetching context while the user is still typing their question (simpler for suggested queries).
+
+## Conclusion
+
+Building a demo RAG is a weekend project. Building a production RAG is a discipline. Focus on observability—log your retrieval scores, track user feedback (thumbs up/down), and iterate on your chunking strategy. The model is the engine, but data engineering is the fuel.
+`,
+  },
+  {
+    id: "7",
+    slug: "async-backends-redis-rabbitmq",
+    title: "Asynchronous Backends at Scale: Redis, RabbitMQ, and Event-Driven Design",
+    excerpt: "An engineering-focused deep dive into async communication, message guarantees, cache invalidation strategies, and why most distributed systems fail silently.",
+    date: "Dec 2025",
+    readTime: "14 min",
+    tags: ["Backend", "Distributed Systems", "Redis", "RabbitMQ"],
+    featured: true,
+    content: `
+Synchronous HTTP request-response cycles are simple, but they are the silent killers of scalability. When Service A calls Service B, and Service B takes 2 seconds to respond, Service A is held hostage. Multiply this by 5 downstream dependencies, and you have a system destined to time out.
+
+The solution? Asynchronous, event-driven architectures.
+
+## The Shift to Async
+
+In an async architecture, Service A doesn't ask Service B to "do something now." It publishes an event: "This happened." Service B (and C, and D) can listen for that event and react effectively.
+
+## Redis vs. RabbitMQ: Choosing Your Weapon
+
+### Redis (Pub/Sub & Streams)
+- **Best for:** Ephemeral, real-time events where speed > durability. Chat messages, live notifications, presence updates.
+- **Tradeoff:** If the instance crashes, in-memory data might be lost (unless configured otherwise).
+
+### RabbitMQ (Message Broker)
+- **Best for:** Mission-critical tasks where delivery is non-negotiable. Order processing, email dispatch, transaction logging.
+- **Superpowes:** Acknowledgments (ACKs). If a worker crashes while processing a job, RabbitMQ redelivers it to another worker.
+
+## Pattern: The Outbox Pattern for Reliability
+
+A common distributed system bug: You write to your database, but the message broker goes down before you can publish the event. Now your system is inconsistent.
+
+**The Fix:** The Outbox Pattern.
+1. Save the data *and* the event to a "messages" table in the *same* database transaction.
+2. A separate background worker reads the "messages" table and pushes to RabbitMQ.
+3. Once confirmed, delete the message from the table.
+
+## Conclusion
+
+Async architectures introduce complexity—eventual consistency is harder to reason about than strong consistency. But for high-throughput systems, it's the only way to decouple services and ensure that one slow component doesn't bring down the entire house.
+`,
+  },
+  {
+    id: "8",
+    slug: "realtime-communication-primitives",
+    title: "WebSockets vs Polling vs Queues: Choosing the Right Real-Time Primitive",
+    excerpt: "A backend-first comparison of real-time communication models, tradeoffs, and system design implications beyond frontend convenience.",
+    date: "Dec 2025",
+    readTime: "11 min",
+    tags: ["Real-Time", "WebSockets", "System Design"],
+    featured: true,
+    content: `
+"Make it real-time" is a common PM request. But "real-time" isn't a single technology; it's a spectrum of trade-offs. Should you open a persistent WebSocket? Is Long Polling good enough? What about Server-Sent Events (SSE)?
+
+## 1. Short Polling (The "Are We There Yet?" Approach)
+The client asks the server every X seconds: "Any new data?"
+- **Pros:** Dead simple. Works on every server.
+- **Cons:** Wasteful. 99% of requests return "no change." High load on the database.
+
+## 2. Long Polling
+The client asks "Any data?", and the server *hangs* until data arrives (or timeouts).
+- **Pros:** Near real-time latency.
+- **Cons:** Still requires re-establishing connections constantly.
+
+## 3. WebSockets (The Two-Way Highway)
+A persistent, bidirectional TCP connection.
+- **Pros:** Lowest latency. True full-duplex (server can push, client can push).
+- **Cons:** Stateful. Scaling WebSockets is hard because you need "sticky sessions" or a Pub/Sub backplane (like Redis) to route messages across server instances.
+
+## 4. Server-Sent Events (SSE)
+Standard HTTP connection where the server streams data to the client.
+- **Pros:** Native browser support (EventSource). Auto-reconnection. Simple HTTP.
+- **Cons:** Unidirectional (Server -> Client only).
+
+## Decision Matrix
+
+- **Chat App / Game:** WebSockets. You need high-frequency, bidirectional state.
+- **Stock Ticker / Sports Score:** SSE. Use data flows one way.
+- **Email Inbox:** Long Polling (or just Short Polling). A 30s delay is acceptable.
+- **Notification Feed:** SSE or WebSockets depending on scale.
+
+## Conclusion
+
+Don't reach for WebSockets by default. They introduce stateful complexity to your backend. If your data only flows one way (Server -> Client), SSE is drastically simpler and more firewall-friendly. Use the right tool for the right latency requirement.
+`,
+  },
 ];
 
 
