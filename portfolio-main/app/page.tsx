@@ -44,6 +44,7 @@ export default function Home() {
         "GitHub Webhooks",
       ],
       github: "https://github.com/xd-sarthak/CodeRevU",
+      link: "https://coderevu.vercel.app",
       year: "2025",
       slug: "coderevu-ai-pr-review",
     },
