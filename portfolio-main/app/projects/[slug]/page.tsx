@@ -120,6 +120,28 @@ export default function ProjectPage({
                       <Github className="w-4 h-4" />
                     </Link>
                   )}
+
+                  {project.blogSlug && (
+                    <Link
+                      href={`/blog/${project.blogSlug}`}
+                      className="inline-flex items-center gap-2 px-6 py-3 border border-muted-foreground/30 rounded-lg hover:border-muted-foreground/50 transition-colors duration-300"
+                    >
+                      Read more
+                      <svg
+                        className="w-4 h-4"
+                        fill="none"
+                        stroke="currentColor"
+                        viewBox="0 0 24 24"
+                      >
+                        <path
+                          strokeLinecap="round"
+                          strokeLinejoin="round"
+                          strokeWidth={2}
+                          d="M17 8l4 4m0 0l-4 4m4-4H3"
+                        />
+                      </svg>
+                    </Link>
+                  )}
                 </div>
                 {/* Technology Stack */}
                 <div className="space-y-4">
