@@ -190,6 +190,19 @@ export default function ProjectPage({
                           </h3>
                         </div>
 
+                        {/* Section Image */}
+                        {section.image && (
+                          <div className="w-full rounded-lg overflow-hidden border border-border/30">
+                            <Image
+                              src={section.image.src}
+                              alt={section.image.alt}
+                              width={1200}
+                              height={600}
+                              className="w-full h-auto"
+                            />
+                          </div>
+                        )}
+
                         {/* Section Content */}
                         {section.bullets ? (
                           <ul className="space-y-3 pl-1">

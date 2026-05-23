@@ -157,11 +157,11 @@ export default function HeaderIntro() {
             {[
               "Full-Stack Development",
               "Next.js / TypeScript",
-              "Golang / Node.js",
-              "PostgreSQL",
-              "API Design & Development",
-              "Deployment & CI/CD",
-              "Cloud & Devops",
+              "Golang / Redis",
+              "AI & RAG Infrastructure",
+              "API Design & Async Queues",
+              "Docker & Devops",
+              "Observability (Prometheus/Grafana)",
             ].map((service) => (
               <span
                 key={service}

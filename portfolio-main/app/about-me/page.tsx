@@ -81,10 +81,10 @@ export default function AboutPage() {
             Introduction
           </h2>
           <p className="mt-4 text-muted-foreground leading-relaxed">
-            I am a student at NIT Silchar
-            and work primarily on Full Stack applications . I’ve built production RAG pipelines, real-time systems, and
-            distributed services with Redis, RabbitMQ, and PostgreSQL, focusing
-            on correctness, observability, and long-term maintainability.
+            I am a senior Electronics and Instrumentation Engineering student at the <strong className="text-foreground font-semibold">National Institute of Technology, Silchar</strong> (CGPA: 8.83) building high-performance full-stack systems at the intersection of distributed backends and AI.
+          </p>
+          <p className="mt-4 text-muted-foreground leading-relaxed">
+            Alongside my academic studies, I am an active competitive programmer and a <strong className="text-foreground font-semibold">Knight on LeetCode</strong> (Peak Rating: 1888, 700+ solved). I am also passionate about open-source security, having recently patched a critical path traversal vulnerability in the file jail check of the <strong className="text-foreground font-semibold">PocketPaw</strong> project.
           </p>
         </section>
 
@@ -97,26 +97,97 @@ export default function AboutPage() {
             What I do
           </h2>
           <p className="mt-4 text-muted-foreground leading-relaxed">
-            I focus on turning ideas into reliable products. That usually means
-            defining clear API contracts, modeling data, implementing features
-            on the frontend and backend, and automating builds and releases so
-            teams can move quickly without constant firefighting
+            I focus on turning complex technical specifications into reliable, scalable digital products. That means defining clear API schemas, implementing robust event-driven message architectures, designing context-aware RAG pipelines, and integrating rich real-time frontends.
           </p>
 
           <ul className="mt-6 grid grid-cols-1 sm:grid-cols-2 gap-4 text-sm">
             <li className="p-4 bg-accent/45 backdrop-blur border border-border rounded-lg">
-              FullStack Development
+              Full-Stack Engineering & Architecture
             </li>
             <li className="p-4 bg-accent/45 backdrop-blur border border-border rounded-lg">
-              RAG pipelines & vector search
+              RAG pipelines & high-throughput vector search
             </li>
             <li className="p-4 bg-accent/45 backdrop-blur border border-border rounded-lg">
-              API design & async workflows
+              API design, WebSockets, & event-driven queuing
             </li>
             <li className="p-4 bg-accent/45 backdrop-blur border border-border rounded-lg">
-              Performance, reliability & scale
+              System performance, concurrency, & observability
             </li>
           </ul>
+        </section>
+
+        <section
+          id="skills"
+          className="mb-12"
+          aria-labelledby="skills-heading"
+        >
+          <h2 id="skills-heading" className="text-2xl font-semibold mb-6">
+            Technical Skills
+          </h2>
+          <div className="grid grid-cols-1 sm:grid-cols-2 gap-6">
+            {[
+              {
+                category: "Languages",
+                items: ["TypeScript", "JavaScript", "Python", "C++", "SQL", "Golang"],
+              },
+              {
+                category: "Fullstack",
+                items: [
+                  "Next.js",
+                  "Node.js",
+                  "Express.js",
+                  "WebSockets",
+                  "React",
+                  "RabbitMQ",
+                  "Docker",
+                  "Prometheus",
+                  "Grafana",
+                ],
+              },
+              {
+                category: "AI & RAG",
+                items: [
+                  "LLM Prompting",
+                  "RAG Pipelines",
+                  "Vector Search",
+                  "Embeddings (Gemini)",
+                  "Pinecone",
+                ],
+              },
+              {
+                category: "Databases",
+                items: ["PostgreSQL (Prisma)", "MongoDB", "Redis"],
+              },
+              {
+                category: "Core CS",
+                items: [
+                  "Operating Systems",
+                  "Computer Networks",
+                  "DBMS",
+                  "Data Structures & Algorithms",
+                ],
+              },
+            ].map((skillGroup, index) => (
+              <div
+                key={index}
+                className="p-5 bg-accent/20 border border-border/50 rounded-lg space-y-3"
+              >
+                <h3 className="text-base font-semibold text-foreground">
+                  {skillGroup.category}
+                </h3>
+                <div className="flex flex-wrap gap-2">
+                  {skillGroup.items.map((item, i) => (
+                    <span
+                      key={i}
+                      className="px-2.5 py-1 text-xs bg-background/50 border border-border/80 rounded-md hover:border-muted-foreground/35 transition-colors duration-300"
+                    >
+                      {item}
+                    </span>
+                  ))}
+                </div>
+              </div>
+            ))}
+          </div>
         </section>
 
         <section

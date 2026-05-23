@@ -28,6 +28,140 @@ export interface BlogPost {
 
 export const projects: Project[] = [
   {
+    slug: "distributed-task-queue",
+    name: "Distributed Task Queue",
+    description:
+      "A high-performance, educational distributed task queue built with Go, Redis, and Next.js, featuring priority queuing, delayed tasks, worker state visualization, and high-density metrics.",
+    longDescription: `A high-performance, educational distributed task queue built with Go, Redis, and Next.js. This system is designed to provide full visibility into distributed task processing, showcasing a robust backend architecture paired with a real-time reactive dashboard.
+
+It provides a production-inspired queue model to safely manage high-concurrency background workloads, with detailed telemetry showing exactly what tasks are doing at any microsecond.
+
+**Core Features**
+- Robust Go Backend: Implements an at-least-once delivery queue using Go and Redis with priority queuing, delayed task scheduling, retries & Dead Letter Queues (DLQ) for failed jobs, and dynamic worker pool management.
+- Real-time Next.js Dashboard: A beautifully designed frontend to visualize live task flow pipelines, real-time worker status (idle/busy/offline), activity logs tracking exactly what stage tasks are in, and high-density metrics and success rates.
+- Docker Orchestrated: Multi-container workspace setup for instantaneous local development.
+
+**System Architecture**
+
+![dist-task-queue architecture](/dist_task_queue_architecture.png)
+
+The task queue is structured as an asynchronous messaging and processing pipeline:
+- Backend (Go): Exposes a clean REST API on port 8080. Manages the worker pool lifecycle, orchestrating concurrent worker routines that safely dequeue, process, and transition tasks.
+- Broker & State Store (Redis 7): Serves as the high-throughput message broker. Uses Redis List structures for FIFO/LIFO queues, ZSETs (Sorted Sets) for delay queues, and Hash maps for maintaining worker heartbeat and state metadata.
+- Frontend Dashboard (Next.js 16 + React 19 + TailwindCSS v4): Streams state transitions directly to the browser, displaying reactive metrics, system health, and worker lifecycles.
+
+**Design Decisions**
+- At-Least-Once Delivery: Uses Redis transaction mechanisms to ensure tasks are only acknowledged and popped once workers have safely finished processing, preventing task loss during crashes.
+- Dynamic Worker Registry: Workers announce themselves to Redis on startup and maintain an active heartbeat. If a worker goes offline, its state is garbage collected, and remaining tasks are re-queued.
+- High-Density React dashboard: React 19 concurrent features keep the dashboard responsive even under high-frequency server-sent updates.
+
+**Key Challenges**
+- Atomic Dequeue Operations: Preventing race conditions when multiple concurrent workers pull from the priority queue. Solved by implementing Redis Lua scripts for atomic search, lock, and pop operations.
+- Accurate Delayed Scheduling: Designing a low-overhead ticker routine in Go that periodically transfers ready tasks from the Redis delayed set into the active processing queue without creating execution lag.
+- State Reconciliation: Keeping the real-time dashboard UI perfectly synchronized with database states under thousands of short-lived task transitions.
+
+**Key Learnings**
+- Lua Scripting in Redis: Offloading state transition logic directly to Redis using Lua scripts guarantees atomicity and dramatically reduces round-trip network times.
+- Go Concurrency Patterns: Channels and sync primitives in Go provide excellent control for building robust, self-healing worker pools.
+- Real-time UX Strategy: Buffering high-frequency state updates on the frontend prevents UI thread blocking and preserves rendering performance.
+
+**Impact and Results**
+- Zero Task Loss: Achieved reliable execution with automatic retry logic and safe DLQ fallback for persistent errors.
+- Sub-millisecond Dequeue: Dequeue latency remains under 1ms under high concurrent worker pool tests.
+- High Observability: Delivered a beautiful dashboard that makes complex distributed system patterns instantly understandable.`,
+    tech: ["Go", "Redis", "Next.js", "React", "Tailwind CSS", "Docker"],
+    github: "https://github.com/xd-sarthak/dtq",
+    year: "2026",
+    featured: true,
+  },
+  {
+    slug: "llm-api-gateway",
+    name: "routerx — LLM API Gateway",
+    description:
+      "A self-hosted API gateway for LLM providers with key management, rate limiting, semantic caching, usage tracking, and a real-time admin dashboard.",
+    longDescription: `
+You have one OpenRouter API key. You need to give LLM access to multiple services, teams, or projects — each with their own key, rate limit, and usage tracking. You don't want to expose your provider key, and you want to see exactly who's using what.
+
+routerx sits between your clients and the upstream provider, giving you full control over access, cost, and observability.
+
+**Core Features**
+- Per-client API keys — issue, revoke, and track keys independently. Keys are stored as SHA-256 hashes so a database leak doesn't expose client credentials.
+- Token bucket rate limiting — Redis-backed, per-key, configurable window. Implemented as an atomic Lua script that survives restarts and works across instances.
+- Semantic caching — two-tier cache: exact hash match first (fast), then pgvector cosine similarity matching (smart). Saves tokens on repeated or similar queries.
+- Usage logging — per-request logging with model, tokens, cost, and latency. Async writes so logging never blocks the response path.
+- Automatic cost tracking — fetches live pricing from OpenRouter and calculates per-request cost in the background.
+- Admin dashboard — real-time Next.js UI for managing keys and monitoring usage across all clients.
+
+**System Architecture**
+
+![routerx architecture](/llm_api_gateway_architecture.svg)
+
+The gateway is structured as a middleware pipeline:
+- Chi Router — HTTP entry point with structured logging and CORS.
+- Auth Middleware — Bearer token to SHA-256 hash to Postgres lookup against the api_keys table.
+- Rate Limiter — Redis token bucket enforces per-key rate limits before the request reaches the proxy.
+- Semantic Cache — checks for exact hash match, then pgvector similarity. On a cache hit, the response is returned immediately without hitting the upstream provider.
+- Proxy Handler — on cache miss, the request is relayed to OpenRouter with body size limits and the centralized provider key.
+- Usage Logger — asynchronously logs the request (model, tokens, cost, latency) to Postgres after the response is sent.
+
+**Design Decisions**
+- SHA-256 hashed keys: a database leak doesn't expose client credentials.
+- Redis token bucket: Lua-scripted atomic rate limiting; survives restarts, shared across instances.
+- Two-tier cache: exact hash match first (fast), then pgvector cosine similarity (smart).
+- Async usage logging: writes don't block the response path; cost calculation happens in background.
+- Single upstream key: gateway pattern — clients get isolated keys, billing stays centralized.
+- No external deps for tests: fake SQL drivers let all tests run without Postgres/Redis.
+
+**Key Challenges**
+- Designing a middleware pipeline that composes cleanly (auth, rate limit, cache, proxy, log).
+- Implementing atomic rate limiting in Redis with Lua scripts for correctness under concurrency.
+- Building a two-tier semantic cache that balances speed (exact hash) with intelligence (vector similarity).
+- Ensuring async usage logging doesn't lose data on crashes while keeping the response path fast.
+
+**Key Learnings**
+- Chi's middleware composition model maps well to API gateway pipelines.
+- Redis Lua scripts are essential for correct atomic operations like token buckets.
+- pgvector similarity search is surprisingly effective for caching semantically equivalent LLM queries.
+- Separating the admin API from the proxy path simplifies auth and routing concerns.
+
+**Impact and Results**
+- Enabled multi-team LLM access through a centralized Go-based gateway with API-key isolation, rate limiting, observability, and usage tracking.
+- Reduced redundant LLM API calls through exact + semantic caching architecture, achieving ~90% effective cache hit rate during mixed-workload benchmark testing.
+- Limited upstream provider fallbacks to <0.3% across 40k+ benchmark requests using Redis-backed exact caching and pgvector semantic similarity search.
+- Provided real-time latency, error-rate, throughput, goroutine, and cache-efficiency visibility using Prometheus and Grafana observability pipelines.
+- Load-tested the gateway under concurrent AI inference workloads, sustaining ~62 requests/sec across 40k+ requests using k6-based traffic simulation.
+`,
+    tech: ["Go", "Next.js", "PostgreSQL", "Redis"],
+    github: "https://github.com/xd-sarthak/llm-api-gateway",
+    year: "2026",
+    featured: true,
+  },
+  {
+    slug: "regex-engine-go",
+    name: "Regex — Regex Engine in Go",
+    description:
+      "A regex engine in Go: lexer, parser, and matcher with a small CLI to try patterns against text. Supports literals, quantifiers, alternation, groups, predefined classes, and escapes.",
+    longDescription: `
+I built a small regular-expression engine in Go to learn how pattern matching works under the hood. You give it a pattern and some text; it tells you whether (and where) the pattern matches. The project includes a command-line tool and can also be used as a library.
+
+**How it works**
+
+The pattern goes through three stages: first it is turned into tokens (like “character,” “repeat zero or more,” “or”), then those tokens are turned into a tree that represents the pattern, and finally that tree is run against your text to find a match.
+
+**What you can do with it**
+
+You can match plain text, “any character,” repeats (like “zero or more” or “one or more”), “or” between options, and groups (including non-capturing). It also supports shortcuts for digits, word characters, and spaces, plus escape sequences like newline and tab.
+
+**Current limits**
+
+Anchors (start/end of string) and character classes (e.g. “a to z”) are partly implemented. Some advanced features (backreferences, lookahead/lookbehind) exist in the code but aren’t fully wired up yet. Parser errors currently cause the program to panic.
+`,
+    tech: ["Go"],
+    github: "https://github.com/xd-sarthak/Regex-engine",
+    blogSlug: "building-a-regex-engine-in-go",
+    year: "2026",
+  },
+  {
     slug: "coderevu-ai-pr-review",
     name: "CodeRevU — AI-Powered GitHub PR Review ",
     description:
@@ -80,6 +214,50 @@ CodeRevU operates on a sophisticated RAG pipeline:
     link: "https://coderevu.vercel.app",
     year: "2025",
     featured: true,
+  },
+  {
+    slug: "streamify-realtime-platform",
+    name: "Streamify — Real-Time Communication Platform",
+    description:
+      "A real-time communication platform supporting video calls, messaging, and presence tracking using WebRTC, Socket.io, and JWT-based authentication.",
+    longDescription: `
+Streamify focuses on the backend challenges of real-time communication: signaling, presence tracking, and session management.
+
+The system uses WebSockets for low-latency messaging and WebRTC for peer-to-peer video communication.
+
+**System Architecture**
+
+A hybrid real-time architecture optimized for latency:
+- Signaling: Custom Node.js/Socket.io signaling server negotiates WebRTC connection metadata (SDP, ICE candidates).
+- Media Transport: WebRTC establishes efficient P2P UDP data channels for video and audio streams.
+- State Management: Redis stores ephemeral presence data (online status, active rooms) for blazing-fast access.
+- Security: JWT-based handshake mechanism validates socket connections before upgrading protocols.
+
+**Key Challenges**
+- Managing real-time presence across multiple sessions.
+- Designing signaling flows for WebRTC.
+- Securing real-time connections with JWT authentication.
+- Ensuring scalability under concurrent usage.
+
+**Key Learnings**
+- WebSockets outperform polling for real-time UX.
+- Decoupling signaling from media streams simplifies architecture.
+- JWT-based session validation prevents unauthorized socket access.
+
+**Impact**
+- Enabled smooth real-time communication with low perceived latency.
+`,
+    tech: [
+      "Node.js",
+      "React",
+      "Socket.io",
+      "WebRTC",
+      "JWT",
+      "Tailwind CSS",
+    ],
+    github: "https://github.com/xd-sarthak/streamify",
+    link: "https://streamify-pn0g.onrender.com/",
+    year: "2025",
   },
   {
     slug: "runbook-workflow-engine",
@@ -154,7 +332,7 @@ Separate Node and Connection tables reference Workflow, with node data stored as
       "Gemini AI",
       "OpenAI",
     ],
-    github: "https://github.com/yourusername/runbook",
+    github: "https://github.com/xd-sarthak/AI-Workflow",
     year: "2025",
     featured: true,
   },
@@ -209,50 +387,6 @@ Designed as a distributed system to handle high concurrency:
     year: "2025",
   },
   {
-    slug: "streamify-realtime-platform",
-    name: "Streamify — Real-Time Communication Platform",
-    description:
-      "A real-time communication platform supporting video calls, messaging, and presence tracking using WebRTC, Socket.io, and JWT-based authentication.",
-    longDescription: `
-Streamify focuses on the backend challenges of real-time communication: signaling, presence tracking, and session management.
-
-The system uses WebSockets for low-latency messaging and WebRTC for peer-to-peer video communication.
-
-**System Architecture**
-
-A hybrid real-time architecture optimized for latency:
-- Signaling: Custom Node.js/Socket.io signaling server negotiates WebRTC connection metadata (SDP, ICE candidates).
-- Media Transport: WebRTC establishes efficient P2P UDP data channels for video and audio streams.
-- State Management: Redis stores ephemeral presence data (online status, active rooms) for blazing-fast access.
-- Security: JWT-based handshake mechanism validates socket connections before upgrading protocols.
-
-**Key Challenges**
-- Managing real-time presence across multiple sessions.
-- Designing signaling flows for WebRTC.
-- Securing real-time connections with JWT authentication.
-- Ensuring scalability under concurrent usage.
-
-**Key Learnings**
-- WebSockets outperform polling for real-time UX.
-- Decoupling signaling from media streams simplifies architecture.
-- JWT-based session validation prevents unauthorized socket access.
-
-**Impact**
-- Enabled smooth real-time communication with low perceived latency.
-`,
-    tech: [
-      "Node.js",
-      "React",
-      "Socket.io",
-      "WebRTC",
-      "JWT",
-      "Tailwind CSS",
-    ],
-    github: "https://github.com/xd-sarthak/streamify",
-    link: "https://streamify-pn0g.onrender.com/",
-    year: "2025",
-  },
-  {
     slug: "drillwork-task-management",
     name: "DrillWork — Role-Based Task Management System",
     description:
@@ -298,31 +432,6 @@ A secure, layered REST API architecture:
     ],
     github: "https://github.com/xd-sarthak/Task-Management-App",
     link: "https://drillwork.vercel.app/",
-    year: "2025",
-  },
-  {
-    slug: "regex-engine-go",
-    name: "Regex — Regex Engine in Go",
-    description:
-      "A regex engine in Go: lexer, parser, and matcher with a small CLI to try patterns against text. Supports literals, quantifiers, alternation, groups, predefined classes, and escapes.",
-    longDescription: `
-I built a small regular-expression engine in Go to learn how pattern matching works under the hood. You give it a pattern and some text; it tells you whether (and where) the pattern matches. The project includes a command-line tool and can also be used as a library.
-
-**How it works**
-
-The pattern goes through three stages: first it is turned into tokens (like “character,” “repeat zero or more,” “or”), then those tokens are turned into a tree that represents the pattern, and finally that tree is run against your text to find a match.
-
-**What you can do with it**
-
-You can match plain text, “any character,” repeats (like “zero or more” or “one or more”), “or” between options, and groups (including non-capturing). It also supports shortcuts for digits, word characters, and spaces, plus escape sequences like newline and tab.
-
-**Current limits**
-
-Anchors (start/end of string) and character classes (e.g. “a to z”) are partly implemented. Some advanced features (backreferences, lookahead/lookbehind) exist in the code but aren’t fully wired up yet. Parser errors currently cause the program to panic.
-`,
-    tech: ["Go"],
-    github: "https://github.com/xd-sarthak/Regex-engine",
-    blogSlug: "building-a-regex-engine-in-go",
     year: "2025",
   },
 ];

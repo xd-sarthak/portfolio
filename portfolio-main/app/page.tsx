@@ -9,6 +9,24 @@ import ThoughtsList from "@/components/home/ThoughtsList";
 export default function Home() {
   const jobs = [
     {
+      year: "2025",
+      role: "Fullstack Intern",
+      company: "Quantus Management System Pvt. Ltd. | New Delhi, India",
+      description: [
+        "Built a scalable KYC verification platform supporting secure onboarding and compliance workflows.",
+        "Developed REST APIs for authentication, document management, RBAC, and admin approval workflows, reducing manual verification effort by 60%.",
+        "Integrated OCR-based document validation with 92%+ extraction accuracy and implemented real-time dashboards with audit logging.",
+      ],
+      tech: [
+        "React",
+        "Node.js",
+        "TypeScript",
+        "REST APIs",
+        "OCR",
+        "RBAC",
+      ],
+    },
+    {
       year: "2024",
       role: "Trainee Analyst",
       company: "Path Infotech Ltd. | Noida, India",
@@ -30,6 +48,24 @@ export default function Home() {
 
   const projects = [
     {
+      name: "Distributed Task Queue",
+      description:
+        "A high-performance, educational distributed task queue built with Go, Redis, and Next.js, featuring priority queuing, delayed tasks, worker state visualization, and high-density metrics.",
+      tech: ["Go", "Redis", "Next.js", "React", "Tailwind CSS", "Docker"],
+      github: "https://github.com/xd-sarthak/dtq",
+      year: "2026",
+      slug: "distributed-task-queue",
+    },
+    {
+      name: "routerx — LLM API Gateway",
+      description:
+        "A self-hosted API gateway for LLM providers with key management, rate limiting, semantic caching, usage tracking, and a real-time admin dashboard.",
+      tech: ["Go", "Next.js", "PostgreSQL", "Redis"],
+      github: "https://github.com/xd-sarthak/llm-api-gateway",
+      year: "2026",
+      slug: "llm-api-gateway",
+    },
+    {
       name: "CodeRevU — AI-Powered GitHub PR Review SaaS",
       description:
         "Built an AI-powered GitHub pull request review platform that automatically generates structured code reviews using RAG and Gemini AI, eliminating manual review overhead for repetitive PRs.",
@@ -47,77 +83,6 @@ export default function Home() {
       link: "https://coderevu.vercel.app",
       year: "2025",
       slug: "coderevu-ai-pr-review",
-    },
-    {
-      name: "RunBook — Visual Workflow Execution Engine",
-      description:
-        "Built a visual workflow automation platform with webhook-triggered, AI-augmented execution using Next.js 15, React Flow, and Inngest for event-driven orchestration.",
-      tech: [
-        "Next.js 15",
-        "React 19",
-        "TypeScript",
-        "React Flow",
-        "Prisma",
-        "PostgreSQL",
-        "Inngest",
-        "tRPC",
-        "Gemini AI",
-        "OpenAI",
-      ],
-      github: "https://github.com/yourusername/runbook",
-      year: "2025",
-      slug: "runbook-workflow-engine",
-    },
-    {
-      name: "Blogify — Distributed Blogging Platform",
-      description:
-        "Engineered a 3-service distributed backend architecture with async messaging and caching, achieving 99.9% message delivery reliability and reducing read latency to 4–6ms.",
-      tech: [
-        "Node.js",
-        "TypeScript",
-        "MongoDB",
-        "Redis",
-        "RabbitMQ",
-        "Docker",
-      ],
-      github: "https://github.com/xd-sarthak/Blogify",
-      year: "2025",
-      slug: "blogify-distributed-system",
-    },
-    {
-      name: "Streamify — Real-Time Communication Platform",
-      description:
-        "Built a real-time platform supporting 1:1 video calls, messaging, and presence tracking using WebRTC and Socket.io with secure JWT-based authentication.",
-      tech: [
-        "Node.js",
-        "React",
-        "Socket.io",
-        "WebRTC",
-        "JWT",
-        "Tailwind CSS",
-      ],
-      link: "https://streamify-pn0g.onrender.com/",
-      github: "https://github.com/xd-sarthak/streamify",
-      year: "2025",
-      slug: "streamify-realtime-platform",
-    },
-    {
-      name: "DrillWork — Role-Based Task Management System",
-      description:
-        "Designed REST APIs and data models for workspace, project, and task management with role-based permissions and dual authentication strategies.",
-      tech: [
-        "TypeScript",
-        "Express.js",
-        "MongoDB",
-        "Mongoose",
-        "Passport.js",
-        "Zod",
-        "React",
-      ],
-      link: "https://drillwork.vercel.app/",
-      github: "https://github.com/xd-sarthak/Task-Management-App",
-      year: "2025",
-      slug: "drillwork-task-management",
     },
   ];
 
