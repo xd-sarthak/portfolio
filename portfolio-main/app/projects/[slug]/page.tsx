@@ -76,8 +76,14 @@ export default function ProjectPage({
             {/* Header */}
             <div className="space-y-6">
               <div className="space-y-4">
-                <div className="text-sm text-muted-foreground font-mono">
+                <div className="text-sm text-muted-foreground font-mono flex items-center gap-2">
                   {project.year}
+                  {project.ongoing && (
+                    <>
+                      <span>•</span>
+                      <span className="text-primary/80 font-medium">Ongoing</span>
+                    </>
+                  )}
                 </div>
                 <h1 className="text-4xl sm:text-5xl lg:text-6xl font-light">
                   {project.name}

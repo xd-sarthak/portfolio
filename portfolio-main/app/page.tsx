@@ -48,6 +48,25 @@ export default function Home() {
 
   const projects = [
     {
+      name: "miniDB — Relational Database Engine",
+      description:
+        "A relational database engine built from scratch in Go featuring ACID transactions, B-Tree indexes, SQL query planning, recovery management, and a custom storage engine.",
+      tech: [
+        "Go",
+        "SQL",
+        "B-Tree",
+        "Hash Indexing",
+        "Write-Ahead Logging",
+        "Concurrency Control",
+        "Storage Engines",
+        "Query Planning"
+      ],
+      github: "https://github.com/xd-sarthak/miniDB",
+      year: "2026",
+      slug: "miniDB",
+      ongoing: true,
+    },
+    {
       name: "Distributed Task Queue",
       description:
         "A high-performance, educational distributed task queue built with Go, Redis, and Next.js, featuring priority queuing, delayed tasks, worker state visualization, and high-density metrics.",

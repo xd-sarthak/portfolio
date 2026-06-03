@@ -26,8 +26,14 @@ export default function ProjectsList({ projects }: { projects: any[] }) {
                   <h3 className="text-lg sm:text-xl font-medium group-hover:text-muted-foreground transition-colors duration-700">
                     {project.name}
                   </h3>
-                  <p className="text-sm text-muted-foreground">
+                  <p className="text-sm text-muted-foreground flex items-center gap-2">
                     {project.year}
+                    {project.ongoing && (
+                      <>
+                        <span>•</span>
+                        <span className="text-primary/80 font-medium">Ongoing</span>
+                      </>
+                    )}
                   </p>
                 </div>
                 <svg

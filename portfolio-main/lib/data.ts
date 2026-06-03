@@ -12,6 +12,7 @@ export interface Project {
   github?: string;
   blogSlug?: string;
   featured?: boolean;
+  ongoing?: boolean;
 }
 
 export interface BlogPost {
@@ -27,6 +28,75 @@ export interface BlogPost {
 }
 
 export const projects: Project[] = [
+  {
+    slug: "miniDB",
+    name: "miniDB — Relational Database Engine",
+    description:
+      "A relational database engine built from scratch in Go featuring ACID transactions, B-Tree indexes, SQL query planning, recovery management, and a custom storage engine.",
+    longDescription: `
+miniDB is a relational database engine built from first principles to explore how modern databases such as PostgreSQL and MySQL work internally.
+
+The project implements the complete database pipeline including storage management, indexing, SQL parsing, query planning, transaction processing, concurrency control, and crash recovery.
+
+**Core Features**
+
+- Custom page-based storage engine with block-oriented disk management.
+- Buffer pool manager with configurable replacement strategies.
+- ACID-compliant transaction system supporting commit, rollback, logging, and recovery.
+- Concurrency control through lock management and transaction isolation primitives.
+- SQL parser and query planner supporting SELECT, INSERT, UPDATE, DELETE, CREATE TABLE, CREATE VIEW, and CREATE INDEX.
+- B-Tree and Hash index implementations for efficient lookups.
+- Query execution engine supporting joins, projections, filtering, sorting, aggregation, GROUP BY, HAVING, and ORDER BY.
+- Metadata catalog managing schemas, tables, views, statistics, and indexes.
+- Native database/sql driver integration allowing DropDB to be used like a standard Go database.
+
+**System Architecture**
+
+![miniDB architecture](/miniDB.png)
+
+- Storage Layer: Page-based file manager handling block allocation, persistence, and disk I/O.
+- Buffer Manager: Memory-resident page cache with pin/unpin semantics and replacement strategies.
+- Transaction Layer: Write-ahead logging, checkpoints, rollback, recovery, and concurrency control.
+- Query Layer: Lexer, parser, optimizer, planner, and execution operators.
+- Index Layer: B-Tree and Hash indexes for accelerating query execution.
+- Driver Layer: SQL driver exposing DropDB through Go's database/sql interface.
+
+**Key Challenges**
+
+- Designing a page-oriented storage engine with efficient record layouts.
+- Implementing crash-safe transaction recovery using write-ahead logging.
+- Building B-Tree index split and traversal algorithms.
+- Managing concurrent transactions through lock coordination.
+- Translating SQL queries into executable query plans.
+
+**Key Learnings**
+
+- Database internals including storage engines, buffer pools, and recovery systems.
+- Query planning and execution pipelines.
+- Transaction isolation and concurrency control mechanisms.
+- Index design tradeoffs between B-Tree and Hash structures.
+- Low-level systems programming in Go.
+
+**Impact**
+
+- Built a feature-rich relational database engine comprising storage, indexing, query processing, and transaction management subsystems.
+- Demonstrated end-to-end understanding of database architecture beyond application-level backend development.
+`,
+    tech: [
+      "Go",
+      "SQL",
+      "B-Tree",
+      "Hash Indexing",
+      "Write-Ahead Logging",
+      "Concurrency Control",
+      "Storage Engines",
+      "Query Planning"
+    ],
+    github: "https://github.com/xd-sarthak/miniDB",
+    year: "2026",
+    featured: true,
+    ongoing: true,
+  },
   {
     slug: "distributed-task-queue",
     name: "Distributed Task Queue",
@@ -173,11 +243,19 @@ The system indexes repositories asynchronously, retrieves relevant code context 
 
 **System Architecture**
 
-CodeRevU operates on a sophisticated RAG pipeline:
-- Frontend: Next.js 16 App Router for a high-performance, server-rendered dashboard.
-- Backend & Orchestration: Inngest powers reliable, event-driven workflows (e.g., 'pr.created') that run asynchronously to handle long-running indexing tasks.
-- Data & Vector Store: PostgreSQL (via Prisma) stores user/project data, while Pinecone indexes code embeddings for semantic retrieval.
-- AI Engine: Google Gemini Pro generates code reviews based on retrieved contexts, grounded by static analysis data.
+![CodeRevU System Architecture](/coderevu.svg)
+
+CodeRevU is designed around a fully event-driven, server-rendered Retrieval-Augmented Generation (RAG) architecture:
+- Next.js 16 App Router Platform: Coordinates client interactions, Server Actions, API routes, and real-time dashboard UI using shadcn/ui and TanStack Query.
+  - Auth: Better Auth validates sessions and enables credential-less GitHub OAuth flow.
+  - Webhooks: Secures incoming GitHub repository updates via HMAC-SHA256 signatures, routed to a dedicated PR event handler validated by Zod schemas.
+  - Dashboard: Renders dynamic repo analytics, review histories, and active project settings.
+  - Payments: Manages free/pro subscription tiers and limits using Polar.sh checkout and billing gates.
+- Inngest Background Workers: Drives reliable, durable asynchronous queue workflows with built-in retry mechanisms and fine-grained concurrency limiters.
+  - indexRepo: Triggered on project registration to crawl repository files via Octokit, generate embeddings, and bulk upsert them into the vector store.
+  - generateReview: Triggered on pull request updates to analyze diff files, pull context-aware matches from the vector database, and format structured code feedback.
+- Data Stores: PostgreSQL (interfaced via Prisma ORM) manages user configurations and repository states. Pinecone DB holds 768-dimensional vector embeddings for low-latency similarity queries.
+- AI/LLM Engine: Google Gemini 2.5 Flash acts as the core model for both compiling vector embeddings during ingestion and formulating targeted reviews under precise grounding prompts.
 
 **Key Challenges**
 - Indexing large repositories without blocking GitHub webhook flows.
@@ -209,6 +287,9 @@ CodeRevU operates on a sophisticated RAG pipeline:
       "Pinecone",
       "Inngest",
       "GitHub Webhooks",
+      "Better Auth",
+      "Polar.sh",
+      "TanStack Query",
     ],
     github: "https://github.com/xd-sarthak/CodeRevU",
     link: "https://coderevu.vercel.app",
