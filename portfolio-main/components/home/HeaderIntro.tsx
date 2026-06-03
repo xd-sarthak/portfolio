@@ -6,19 +6,21 @@ import { Tooltip, TooltipContent, TooltipTrigger } from "../ui/tooltip";
 
 export default function HeaderIntro() {
   return (
-    <div className="grid lg:grid-cols-5 gap-12 sm:gap-16 w-full">
+    <div className="grid lg:grid-cols-5 gap-12 sm:gap-16 w-full relative">
+      <div className="absolute top-0 right-0 w-[500px] h-[500px] lg:w-[800px] lg:h-[800px] bg-emerald-500/10 rounded-full blur-[100px] lg:blur-[120px] -z-10 pointer-events-none translate-x-1/4 -translate-y-1/4" />
       <div className="lg:col-span-3 space-y-6 sm:space-y-8">
-        <div className="space-y-3 sm:space-y-2">
-          <div className="text-sm text-muted-foreground font-mono tracking-wider">
+        <div className="space-y-3 sm:space-y-4">
+          <div className="text-xs sm:text-sm text-emerald-400/80 font-mono tracking-widest uppercase">
             SOFTWARE DEVELOPER / {new Date().getFullYear()}
           </div>
-          <h1 className="text-5xl sm:text-6xl lg:text-7xl font-medium tracking-tight">
-            Sarthak <span className="text-muted-foreground">Srivastav</span>
+          <h1 className="text-6xl sm:text-7xl lg:text-[5.5rem] font-medium tracking-tight leading-[1.1] sm:leading-[1.1] lg:leading-[1.1]">
+            <span className="block text-foreground">Sarthak</span>
+            <span className="block text-muted-foreground">Srivastav</span>
           </h1>
         </div>
 
-        <div className="space-y-6 max-w-md">
-          <p className="text-lg sm:text-xl text-muted-foreground leading-relaxed">
+        <div className="space-y-6 max-w-md mt-4">
+          <p className="text-lg text-muted-foreground leading-relaxed">
             Software Developer building fast and scalable digital products using{" "}
             <span className="text-foreground">Next.js</span>,{" "}
             <span className="text-foreground">TypeScript</span>,{" "}
@@ -26,7 +28,7 @@ export default function HeaderIntro() {
             <span className="text-foreground">PostgreSQL</span>.
             <Tooltip>
               <TooltipTrigger asChild>
-                <Link href="/about-me" className="underline ml-1 text-sm">
+                <Link href="/about-me" className="underline underline-offset-4 ml-1 text-emerald-400/80 hover:text-emerald-400 transition-colors">
                   Learn more about me.
                 </Link>
               </TooltipTrigger>
@@ -53,14 +55,14 @@ export default function HeaderIntro() {
             <div>India</div>
           </div>
 
-          <div className="flex flex-wrap gap-3 pt-4">
+          <div className="flex flex-wrap gap-3 pt-6">
             <Tooltip>
               <TooltipTrigger asChild>
                 <Link
-                  href="https://drive.google.com/file/d/1QNZYelIlplkeXvfzW8AKzpdKEX7pCaU4/view?usp=drive_link"
+                  href="https://drive.google.com/file/d/18g5QcK0euGL4C_JQc61z1NMqLOME6PhU/view?usp=drive_link"
                   target="_blank"
                   rel="noopener noreferrer"
-                  className="flex-1 px-4 py-2 bg-foreground rounded-lg hover:border-muted-foreground/50 text-sm text-background transition-all duration-300 hover:shadow-sm flex items-center justify-center gap-2"
+                  className="flex-1 px-5 py-2.5 bg-foreground rounded-xl text-sm font-medium text-background transition-all duration-300 hover:opacity-90 hover:shadow-[0_0_20px_rgba(255,255,255,0.1)] flex items-center justify-center gap-2"
                 >
                   <FileText className="w-4 h-4" />
                   Resume
@@ -73,7 +75,7 @@ export default function HeaderIntro() {
               <TooltipTrigger asChild>
                 <Link
                   href="/projects"
-                  className="flex-1 px-4 py-2 rounded-lg hover:border-muted-foreground/50 text-sm transition-all duration-300 hover:shadow-sm flex items-center justify-center gap-2 bg-accent"
+                  className="flex-1 px-5 py-2.5 rounded-xl border border-border bg-transparent text-sm font-medium text-foreground transition-all duration-300 hover:bg-accent flex items-center justify-center gap-2"
                 >
                   <Github className="w-4 h-4" />
                   Projects
@@ -86,7 +88,7 @@ export default function HeaderIntro() {
               <TooltipTrigger asChild>
                 <Link
                   href="/blog"
-                  className="max-sm:hidden flex-1 px-4 py-2 bg-foreground/5 backdrop-blur-xl border border-border rounded-lg hover:border-muted-foreground/50 text-sm transition-all duration-300 hover:shadow-sm flex items-center justify-center gap-2"
+                  className="max-sm:hidden flex-1 px-5 py-2.5 rounded-xl border border-border bg-transparent text-sm font-medium text-foreground transition-all duration-300 hover:bg-accent flex items-center justify-center gap-2"
                 >
                   <File className="w-4 h-4" />
                   Read Blogs
@@ -138,22 +140,22 @@ export default function HeaderIntro() {
         </div>
       </div> */}
 
-      <div className="lg:col-span-2 flex flex-col justify-end space-y-6 sm:space-y-8 mt-8 lg:mt-0">
+      <div className="lg:col-span-2 flex flex-col justify-center space-y-10 mt-12 lg:mt-0 lg:pl-12">
         <div className="space-y-4">
-          <div className="text-sm text-muted-foreground font-mono">
+          <div className="text-xs sm:text-sm text-emerald-400/80 font-mono tracking-widest uppercase">
             WHAT I DO
           </div>
-          <div className="space-y-2">
-            <div className="text-foreground">Building Products</div>
-            <div className="text-muted-foreground">
+          <div className="space-y-3">
+            <h2 className="text-xl sm:text-2xl text-foreground font-medium">Building Products</h2>
+            <p className="text-muted-foreground">
               From idea → architecture → development → launch
-            </div>
+            </p>
           </div>
         </div>
 
         <div className="space-y-4">
-          <div className="text-sm text-muted-foreground font-mono">FOCUS</div>
-          <div className="flex flex-wrap gap-2">
+          <div className="text-xs sm:text-sm text-emerald-400/80 font-mono tracking-widest uppercase">FOCUS</div>
+          <div className="flex flex-wrap gap-2.5">
             {[
               "Full-Stack Development",
               "Next.js / TypeScript",
@@ -165,7 +167,7 @@ export default function HeaderIntro() {
             ].map((service) => (
               <span
                 key={service}
-                className="px-3 py-1 text-xs bg-accent/45 backdrop-blur-lg border border-dashed border-border rounded-lg hover:border-muted-foreground/50 transition-colors duration-300"
+                className="px-4 py-1.5 text-xs bg-black/40 border border-white/5 rounded-full text-zinc-300 hover:bg-white/5 hover:border-white/10 transition-colors duration-300"
               >
                 {service}
               </span>
