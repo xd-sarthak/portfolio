@@ -56,7 +56,7 @@ export default function ConnectSection({ socials }: { socials: any[] }) {
                       className="group p-4 bg-accent/45 backdrop-blur-lg border border-dashed border-border rounded-lg hover:border-muted-foreground/50 transition-all duration-300 hover:shadow-sm"
                     >
                       <div className="space-y-2">
-                        <div className="text-foreground group-hover:text-muted-foreground transition-colors duration-300">
+                        <div className="text-foreground group-hover:bg-clip-text group-hover:text-transparent group-hover:bg-gradient-to-r group-hover:from-emerald-500/90 group-hover:to-cyan-500/90 transition-all duration-500 font-medium">
                           {social.name}
                         </div>
                         <div className="text-sm text-muted-foreground">

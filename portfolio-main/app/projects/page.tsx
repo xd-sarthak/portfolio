@@ -5,6 +5,7 @@ import { projects } from "@/lib/data";
 import { ThemeToggle } from "@/components/theme-toggle";
 import { useEffect } from "react";
 import { ChevronLeft } from "lucide-react";
+import { TechBadge } from "@/components/ui/TechBadge";
 
 export default function ProjectsPage() {
   useEffect(() => {
@@ -46,16 +47,19 @@ export default function ProjectsPage() {
                     <div className="space-y-4">
                       <div className="flex items-start justify-between gap-4">
                         <div className="space-y-2 flex-1">
-                          <h2 className="text-lg sm:text-2xl font-medium group-hover:text-muted-foreground transition-colors duration-300">
+                          <h2 className="text-lg sm:text-2xl font-medium group-hover:bg-clip-text group-hover:text-transparent group-hover:bg-gradient-to-r group-hover:from-emerald-500/90 group-hover:to-cyan-500/90 transition-all duration-500">
                             {project.name}
                           </h2>
                           <p className="text-sm text-muted-foreground flex items-center gap-2">
                             {project.year}
                             {project.ongoing && (
-                              <>
-                                <span>•</span>
-                                <span className="text-primary/80 font-medium">Ongoing</span>
-                              </>
+                              <span className="flex items-center gap-1.5 ml-1">
+                                <span className="relative flex h-2 w-2">
+                                  <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-emerald-400 opacity-75"></span>
+                                  <span className="relative inline-flex rounded-full h-2 w-2 bg-emerald-500"></span>
+                                </span>
+                                <span className="text-emerald-500 font-medium text-xs uppercase tracking-wider">Ongoing</span>
+                              </span>
                             )}
                           </p>
                         </div>
@@ -80,12 +84,7 @@ export default function ProjectsPage() {
 
                       <div className="flex flex-wrap gap-2 pt-2">
                         {project.tech.map((tech) => (
-                          <span
-                            key={tech}
-                            className="px-3 py-1 text-xs bg-accent/45 backdrop-blur-lg border border-dashed border-border rounded-lg hover:border-muted-foreground/50 transition-colors duration-300"
-                          >
-                            {tech}
-                          </span>
+                          <TechBadge key={tech} tech={tech} />
                         ))}
                       </div>
                     </div>

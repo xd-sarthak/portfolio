@@ -75,7 +75,7 @@ export default function BlogPostPage({
             {/* Header */}
             <div className="space-y-6">
               <div className="space-y-4">
-                <h1 className="text-4xl sm:text-5xl lg:text-6xl font-light leading-tight">
+                <h1 className="text-4xl sm:text-5xl lg:text-6xl font-light leading-tight bg-clip-text text-transparent bg-gradient-to-r from-foreground via-foreground to-emerald-400/50 pb-2">
                   {post.title}
                 </h1>
 
@@ -123,7 +123,7 @@ export default function BlogPostPage({
                       className="group p-4 border border-border rounded hover:border-muted-foreground/50 transition-all duration-300"
                     >
                       <div className="space-y-2">
-                        <h4 className="text-sm font-medium text-foreground group-hover:text-muted-foreground transition-colors">
+                        <h4 className="text-sm font-medium text-foreground group-hover:bg-clip-text group-hover:text-transparent group-hover:bg-gradient-to-r group-hover:from-emerald-500/90 group-hover:to-cyan-500/90 transition-all duration-500">
                           {relatedPost.title}
                         </h4>
                         <p className="text-xs text-muted-foreground">

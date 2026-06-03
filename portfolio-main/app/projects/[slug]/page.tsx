@@ -8,6 +8,7 @@ import React, { useEffect } from "react";
 import { parseLongDescription } from "@/lib/parse";
 import Image from "next/image";
 import { Github } from "lucide-react";
+import { TechBadge } from "@/components/ui/TechBadge";
 
 export default function ProjectPage({
   params,
@@ -79,13 +80,16 @@ export default function ProjectPage({
                 <div className="text-sm text-muted-foreground font-mono flex items-center gap-2">
                   {project.year}
                   {project.ongoing && (
-                    <>
-                      <span>•</span>
-                      <span className="text-primary/80 font-medium">Ongoing</span>
-                    </>
+                    <span className="flex items-center gap-1.5 ml-1">
+                      <span className="relative flex h-2 w-2">
+                        <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-emerald-400 opacity-75"></span>
+                        <span className="relative inline-flex rounded-full h-2 w-2 bg-emerald-500"></span>
+                      </span>
+                      <span className="text-emerald-500 font-medium text-[10px] uppercase tracking-wider">Ongoing</span>
+                    </span>
                   )}
                 </div>
-                <h1 className="text-4xl sm:text-5xl lg:text-6xl font-light">
+                <h1 className="text-4xl sm:text-5xl lg:text-6xl font-light bg-clip-text text-transparent bg-gradient-to-r from-foreground via-foreground to-emerald-400/50 pb-2">
                   {project.name}
                 </h1>
                 <p className="text-lg sm:text-xl text-muted-foreground max-w-2xl leading-relaxed">
@@ -152,14 +156,9 @@ export default function ProjectPage({
                 {/* Technology Stack */}
                 <div className="space-y-4">
                   <h2 className="text-2xl font-light">Technology Stack</h2>
-                  <div className="flex flex-wrap gap-2">
+                  <div className="flex flex-wrap gap-2 pt-2">
                     {project.tech.map((tech) => (
-                      <span
-                        key={tech}
-                        className="px-3 py-1 text-xs bg-accent/45 backdrop-blur-lg border border-dashed border-border rounded-lg hover:border-muted-foreground/50 transition-colors duration-300"
-                      >
-                        {tech}
-                      </span>
+                      <TechBadge key={tech} tech={tech} />
                     ))}
                   </div>
                 </div>

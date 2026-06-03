@@ -72,7 +72,7 @@ export default function BlogPage() {
                         <span>{post.readTime}</span>
                       </div>
 
-                      <h2 className="text-xl font-medium group-hover:text-muted-foreground transition-colors duration-300">
+                      <h2 className="text-xl font-medium group-hover:bg-clip-text group-hover:text-transparent group-hover:bg-gradient-to-r group-hover:from-emerald-500/90 group-hover:to-cyan-500/90 transition-all duration-500">
                         {post.title}
                       </h2>
 

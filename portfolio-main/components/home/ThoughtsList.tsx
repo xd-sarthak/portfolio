@@ -28,7 +28,7 @@ export default function ThoughtsList({ posts }: { posts: any[] }) {
                 <span>{post.readTime}</span>
               </div>
 
-              <h3 className="text-lg sm:text-xl font-medium group-hover:text-muted-foreground transition-colors duration-300 line-clamp-2 text-ellipsis">
+              <h3 className="text-lg sm:text-xl font-medium group-hover:bg-clip-text group-hover:text-transparent group-hover:bg-gradient-to-r group-hover:from-emerald-500/90 group-hover:to-cyan-500/90 transition-all duration-500 line-clamp-2 text-ellipsis">
                 {post.title}
               </h3>
 

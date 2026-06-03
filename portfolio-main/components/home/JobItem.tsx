@@ -7,6 +7,7 @@ import {
   CollapsibleContent,
 } from "../ui/collapsible";
 import { ChevronsDownUp, ChevronsUpDown } from "lucide-react";
+import { TechBadge } from "../ui/TechBadge";
 
 export default function JobItem({ job, index }: { job: any; index: number }) {
   const [open, setOpen] = useState(false);
@@ -24,18 +25,13 @@ export default function JobItem({ job, index }: { job: any; index: number }) {
 
       <div className="lg:col-span-7 space-y-3">
         <div>
-          <h3 className="text-lg sm:text-xl font-medium">{job.role}</h3>
+          <h3 className="text-lg sm:text-xl font-medium group-hover:bg-clip-text group-hover:text-transparent group-hover:bg-gradient-to-r group-hover:from-emerald-500/90 group-hover:to-cyan-500/90 transition-all duration-500">{job.role}</h3>
           <div className="text-muted-foreground font-medium leading-tight">
             {job.company}
           </div>
           <div className="flex flex-wrap items-center gap-2 mt-2">
             {job.tech.map((tech: string) => (
-              <span
-                key={tech}
-                className="p-1 text-xs text-muted-foreground rounded-lg bg-accent/45 backdrop-blur-lg border border-dashed border-border group-hover:border-muted-foreground/50 transition-colors duration-500 whitespace-nowrap"
-              >
-                {tech}
-              </span>
+              <TechBadge key={tech} tech={tech} />
             ))}
           </div>
         </div>

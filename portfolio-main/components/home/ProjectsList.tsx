@@ -4,6 +4,7 @@ import Link from "next/link";
 import { Tooltip, TooltipTrigger, TooltipContent } from "../ui/tooltip";
 import { ArrowUpRight } from "lucide-react";
 import React from "react";
+import { TechBadge } from "../ui/TechBadge";
 
 export default function ProjectsList({ projects }: { projects: any[] }) {
   return (
@@ -23,16 +24,19 @@ export default function ProjectsList({ projects }: { projects: any[] }) {
             <div className="space-y-4">
               <div className="flex items-start justify-between gap-4">
                 <div className="space-y-2 flex-1">
-                  <h3 className="text-lg sm:text-xl font-medium group-hover:text-muted-foreground transition-colors duration-700">
+                  <h3 className="text-lg sm:text-xl font-medium group-hover:bg-clip-text group-hover:text-transparent group-hover:bg-gradient-to-r group-hover:from-emerald-500/90 group-hover:to-cyan-500/90 transition-all duration-700">
                     {project.name}
                   </h3>
                   <p className="text-sm text-muted-foreground flex items-center gap-2">
                     {project.year}
                     {project.ongoing && (
-                      <>
-                        <span>•</span>
-                        <span className="text-primary/80 font-medium">Ongoing</span>
-                      </>
+                      <span className="flex items-center gap-1.5 ml-1">
+                        <span className="relative flex h-2 w-2">
+                          <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-emerald-400 opacity-75"></span>
+                          <span className="relative inline-flex rounded-full h-2 w-2 bg-emerald-500"></span>
+                        </span>
+                        <span className="text-emerald-500 font-medium text-xs uppercase tracking-wider">Ongoing</span>
+                      </span>
                     )}
                   </p>
                 </div>
@@ -55,14 +59,9 @@ export default function ProjectsList({ projects }: { projects: any[] }) {
                 {project.description}
               </p>
 
-              <div className="flex flex-wrap gap-x-2 gap-y-1 pt-2">
+              <div className="flex flex-wrap gap-x-2 gap-y-2 pt-2">
                 {project.tech.map((tech: string) => (
-                  <span
-                    key={tech}
-                    className="px-3 py-1 text-xs bg-accent/45 backdrop-blur-lg border border-dashed border-border rounded-lg text-muted-foreground group-hover:border-muted-foreground/30 transition-colors duration-700"
-                  >
-                    {tech}
-                  </span>
+                  <TechBadge key={tech} tech={tech} />
                 ))}
               </div>
             </div>
