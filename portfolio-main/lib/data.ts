@@ -29,6 +29,295 @@ export interface BlogPost {
 
 export const projects: Project[] = [
   {
+    slug: "koder-ai-coding-agent",
+    name: "KODER — Terminal-Native AI Coding Agent",
+    description:
+      "A terminal-native AI coding agent built as a Bun monorepo — a React-based TUI with an agentic tool loop, PLAN/BUILD permission modes, multi-provider model support, browser OAuth, and Postgres-backed session history.",
+    longDescription: `
+KODER is an AI coding agent that lives in the terminal. You point it at a project directory and it plans, reads, searches, edits, and runs commands through a streaming chat interface — with an explicit boundary between what it may read and what it may change.
+
+The architectural decision that shapes the whole system: the model runs on the server, but the tools run on your machine. The server owns the conversation, the model, and the tool *contracts*; the CLI owns execution. Your source code is never uploaded wholesale — only the specific tool results the model asks for cross the wire.
+
+**Core Features**
+
+- PLAN / BUILD modes — PLAN is strictly read-only (\`readFile\`, \`listDirectory\`, \`glob\`, \`grep\`), while BUILD unlocks \`writeFile\`, \`editFile\`, and \`bash\`. The mode gates tool availability at both contract and execution level.
+- Multi-provider model support across Anthropic, OpenAI, OpenRouter, and Groq, switchable mid-session; only the key for the selected model is required.
+- Agentic tool loop — the model requests a tool, the CLI executes it locally, the result feeds back, and the loop continues until the turn resolves.
+- Browser-based OAuth login via Clerk using a PKCE public-client flow, so the CLI authenticates without ever handling a password.
+- Persistent sessions stored in Postgres, browsable and resumable, with per-message metadata for mode, model, duration, and token usage.
+- Terminal UI with themes, a command palette, slash commands (\`/new\`, \`/login\`, \`/models\`, \`/agents\`, \`/sessions\`, \`/theme\`), and a live status bar.
+
+**System Architecture**
+
+A Bun monorepo of four packages:
+
+- \`packages/cli\` — OpenTUI + React terminal client. Renders the UI and executes every tool locally against the working directory.
+- \`packages/server\` — Hono API handling auth, sessions, and chat streaming via the Vercel AI SDK.
+- \`packages/shared\` — The contract layer: modes, Zod tool schemas, and the model catalog, shared by both ends so client and server cannot disagree about what a tool looks like.
+- \`packages/database\` — Prisma schema and client over Postgres.
+
+**Safety Model**
+
+- Every filesystem path is resolved and checked against the working directory, and any path escaping it is rejected — the agent cannot read or write outside the project it was opened in.
+- PLAN mode re-validates tool permissions at execution time, not just when the tool list is sent to the model, so a model that hallucinates a write tool in read-only mode still gets refused.
+- Tool outputs are bounded — file reads, search matches, directory listings, and command output are all capped and truncated, and shell commands run under a timeout.
+
+**Key Challenges**
+
+- Splitting the agent loop across a network boundary — the server streams tool *calls*, the client executes them and streams results back, while both sides keep a consistent view of message state.
+- Designing tool contracts once in a shared package so the model's schema, client execution, and server validation stay in lockstep.
+- Implementing OAuth for a CLI, where there is no browser to redirect and no safe place to keep a secret — solved with a PKCE public-client flow and a local callback.
+- Building a responsive interface with React reconciliation driving a terminal rather than a DOM.
+- Enforcing sandboxing that holds against path traversal while still feeling unrestricted inside the project.
+
+**Key Learnings**
+
+- Agentic loop design — tool contracts, multi-step tool calling, and streaming partial state to a UI.
+- Provider-agnostic LLM integration through a single abstraction over four vendors.
+- Terminal UI development with React outside the browser.
+- OAuth flows for native and CLI clients, including PKCE and token storage.
+- Capability-based security: modeling permissions as tool availability rather than after-the-fact checks.
+
+**Impact**
+
+- Delivered a working coding agent covering the full stack — terminal UI, agent loop, tool sandbox, auth, and persistence.
+- Designed a client-side execution model that keeps source code local while still using hosted models.
+`,
+    tech: [
+      "TypeScript",
+      "Bun",
+      "React",
+      "OpenTUI",
+      "Hono",
+      "Vercel AI SDK",
+      "Prisma",
+      "PostgreSQL",
+      "Clerk OAuth",
+      "Zod",
+      "LLM Agents",
+    ],
+    github: "https://github.com/xd-sarthak/KODER",
+    year: "2026",
+    featured: true,
+  },
+  {
+    slug: "go-redis-server",
+    name: "go-redis — Redis Server from Scratch",
+    description:
+      "A Redis-compatible in-memory database server written in Go — single-threaded epoll event loop, hand-written RESP protocol codec, active and passive key expiry, approximated-LRU eviction, and AOF persistence, speaking to real redis-cli.",
+    longDescription: `
+go-redis is a reimplementation of the Redis server in Go, built to understand how a database that handles hundreds of thousands of operations per second on a *single thread* actually works.
+
+It speaks the real RESP wire protocol, so \`redis-cli\` connects to it directly with no adapter. The concurrency model, expiry strategy, eviction policy, and persistence mechanism are all modeled on how Redis itself solves these problems.
+
+**Core Features**
+
+- Single-threaded, non-blocking TCP server built directly on \`epoll\` syscalls — one thread multiplexing many clients, with no goroutine-per-connection.
+- Hand-written RESP protocol encoder and decoder covering simple strings, errors, integers, bulk strings, and arrays, with command pipelining support and unit tests.
+- Commands: \`PING\`, \`SET\` (with \`EX\`), \`GET\`, \`DEL\`, \`TTL\`, \`EXPIRE\`, \`INCR\`, \`INFO\`, \`CLIENT\`, \`LATENCY\`, and \`BGWRITEAOF\`.
+- Dual expiry strategy — passive expiry on read, plus an active sampling cron that repeatedly checks 20 random keys and keeps looping while more than 25% of the sample is expired.
+- Configurable eviction: \`simple-first\`, \`allkeys-random\`, and an approximated LRU that samples keys into an eviction pool ranked by idle time rather than maintaining a full LRU list.
+- Type and encoding metadata packed into a single byte — 4 bits of type, 4 bits of encoding — with \`WRONGTYPE\` assertions on command dispatch.
+- AOF persistence that replays the keyspace as \`SET\` commands, triggered via \`BGWRITEAOF\`.
+- Keyspace statistics exposed through \`INFO\` across multiple logical databases.
+
+**System Architecture**
+
+- Server Layer: Both a synchronous, connection-per-client server and an asynchronous \`epoll\` event loop are implemented, making the performance difference between the two models directly observable.
+- Event Loop: Registers the listening socket with an epoll instance, sets accepted client sockets non-blocking, and dispatches read-ready file descriptors — interleaving a cron tick for active key expiry between \`EpollWait\` cycles.
+- Protocol Layer: Decodes incoming byte streams into commands and encodes responses back into RESP.
+- Core Layer: The keyspace store, object model with type/encoding tags, expiry table, eviction strategies, and AOF dumping.
+
+**Key Challenges**
+
+- Writing a correct RESP parser against a byte stream where a single read may contain partial or multiple commands.
+- Using raw \`epoll\` syscalls in Go — non-blocking sockets, edge cases around accepting connections, and cleaning up file descriptors when clients disconnect.
+- Fitting periodic maintenance work into an event loop that otherwise blocks indefinitely waiting for I/O.
+- Approximating LRU through sampling, since exact LRU would cost more memory and pointer maintenance than the eviction is worth.
+- Handling clock wrap-around in the 32-bit access-time counter used for idle-time calculations.
+
+**Key Learnings**
+
+- Why Redis is single-threaded, and how I/O multiplexing makes that a performance advantage rather than a limitation.
+- The tradeoffs behind probabilistic algorithms in databases — sampled expiry and approximated LRU trade exactness for predictable, bounded cost.
+- Binary protocol design and streaming parser construction.
+- Low-level Linux networking through the \`syscall\` package instead of Go's \`net\` abstractions.
+- Memory layout decisions, such as packing type and encoding into one byte.
+
+**Impact**
+
+- Built a Redis-compatible server that works with standard Redis clients, covering the networking, protocol, storage, expiry, eviction, and persistence layers.
+- Developed a concrete understanding of event-driven server architecture, applicable well beyond Redis itself.
+`,
+    tech: [
+      "Go",
+      "epoll",
+      "RESP Protocol",
+      "TCP Sockets",
+      "Event Loop",
+      "LRU Eviction",
+      "AOF Persistence",
+      "Systems Programming",
+    ],
+    github: "https://github.com/xd-sarthak/go-redis",
+    year: "2026",
+    ongoing: true,
+  },
+  {
+    slug: "piedpiper-audio-fingerprinting",
+    name: "Pied Piper — Audio Fingerprinting & Song Recognition",
+    description:
+      "A local Shazam built in Go — a hand-written DSP pipeline turns audio into sparse spectral landmarks and 32-bit fingerprint hashes, then identifies a song from a short browser recording by finding fingerprints that agree on the same relative time offset.",
+    longDescription: `
+Pied Piper is a Shazam-style song recognition system built from scratch in Go. Songs are indexed offline through a CLI; identification happens live in the browser from a few seconds of microphone audio.
+
+The interesting part is not the plumbing but the algorithm: how do you recognize a song from a noisy, cropped, arbitrarily-offset recording? The answer is not comparing audio to audio. It is reducing both to sparse, noise-resistant landmarks, hashing the *relationships* between them, and then looking for many fingerprints that agree on the same relative time offset.
+
+The entire DSP stack — FFT, windowing, filtering, peak picking, fingerprinting, and scoring — is implemented by hand rather than pulled from a library.
+
+**How It Works**
+
+Index (offline, CLI): Audio → spectrogram → spectral peaks → 32-bit fingerprint hashes → SQLite
+
+Identify (live, web): Mic recording → WAV → same fingerprinting → hash lookup → score by time-offset consistency → ranked matches
+
+**The DSP Pipeline**
+
+- Preprocessing: normalize to 16-bit PCM at 44.1 kHz, apply a 5 kHz low-pass filter, then downsample 4× to 11.025 kHz — most identifying musical energy lives below 5 kHz, so this cuts data volume without losing signal.
+- Time–frequency analysis: split into 1024-sample frames with a 512-sample hop (50% overlap, ~93 ms per frame), apply a Hamming window to reduce spectral leakage, then a Cooley–Tukey FFT, keeping the positive-frequency half of the magnitude spectrum.
+- Feature extraction: divide frequency bins into logarithmic bands and keep only the strongest peak per band above a threshold, producing a sparse constellation map of (time, frequency) landmarks that survives noise and compression.
+- Fingerprinting: pair each anchor peak with up to 5 subsequent target peaks and pack each pair into a 32-bit hash — 9 bits of anchor frequency, 9 bits of target frequency, and 14 bits of time delta. Hashing *relationships* rather than absolute values is what makes the fingerprint robust to where the recording started.
+
+**Matching & Scoring**
+
+- Every query hash is looked up in an indexed table mapping \`hash → (songID, anchorTimeMs)\`, yielding candidate songs with matched time pairs.
+- For each match, compute the relative offset \`dbTime - queryTime\` and bucket it into 100 ms windows to tolerate timing drift.
+- Score each candidate by the size of its strongest offset cluster. A correct match produces many fingerprints piling into a single bucket; a wrong one scatters offsets with no consensus.
+- Rank by score and return the best match only if it clears a confidence threshold, otherwise return no match.
+
+**System Architecture**
+
+![Pied Piper architecture](/piedpiper_architecture.png)
+
+- Ingest CLI: pulls audio via yt-dlp, converts through FFmpeg, fingerprints it, and writes to SQLite.
+- Server: Go HTTP server with Socket.IO handlers streaming the identification lifecycle back to the browser.
+- DSP package: spectrogram, FFT, peak extraction, fingerprinting, and matching.
+- Client: React 18 + Vite frontend with microphone capture, a live waveform visualizer, and match results.
+
+**Key Challenges**
+
+- Implementing the FFT and windowing correctly — an off-by-one in framing or a missing window silently degrades every downstream stage.
+- Choosing peak-picking thresholds sparse enough to stay noise-resistant but dense enough to still match short clips.
+- Packing frequency and time-delta into 32 bits without collisions that flood the candidate set.
+- Recognizing that hash equality only *generates* candidates — time-offset consistency is what actually identifies the song.
+- Managing fingerprint database growth, since a full track produces millions of rows.
+
+**Key Learnings**
+
+- Digital signal processing fundamentals: sampling, aliasing, windowing, spectral leakage, and the time–frequency tradeoff.
+- Why combinatorial hashing of peak pairs beats matching raw spectra.
+- Designing a compact binary hash format under hard bit budgets.
+- Consistency-based scoring as a general technique for matching under unknown offset.
+- Streaming a multi-stage backend pipeline's progress to a browser over Socket.IO.
+
+**Impact**
+
+- Built a complete, working audio recognition system — ingestion, DSP, fingerprint storage, matching, and a live web client — with the signal processing written from first principles.
+- Reproduced the core algorithm behind industrial audio identification systems end to end.
+`,
+    tech: [
+      "Go",
+      "DSP",
+      "FFT",
+      "Audio Fingerprinting",
+      "SQLite",
+      "Socket.IO",
+      "React",
+      "Vite",
+      "FFmpeg",
+    ],
+    github: "https://github.com/xd-sarthak/piedpiper",
+    year: "2026",
+  },
+  {
+    slug: "sre-agent-swarm",
+    name: "SRE Agent Swarm — Self-Healing Infrastructure",
+    description:
+      "A multi-agent system where six specialized LLM agents detect, diagnose, and remediate infrastructure incidents autonomously — coordinated over NATS JetStream with a formal incident FSM, blast-radius policy gates, and human-in-the-loop approval.",
+    longDescription: `
+SRE Agent Swarm is a self-healing infrastructure system: a swarm of specialized AI agents that continuously monitors a microservices environment, detects anomalies, reasons about root cause, proposes remediations, and — behind safety gates — executes fixes on its own.
+
+The goal was to model what a senior SRE team actually does during an incident, then decompose it into agents with distinct responsibilities and a formal lifecycle connecting them. It handles failure modes like memory leaks, CPU spikes, network partitions, and database overload, using LLM reasoning to correlate signals across metrics, logs, and traces.
+
+The repository includes a full microservices playground (ten services across Python, Go, Node.js, and Django) so the swarm has a real system to observe and repair, plus a chaos engineering harness to inject the failures it is meant to catch.
+
+**The Agent Swarm**
+
+- Observer — Detects anomalies from metrics, logs, health checks, and synthetic probes, with deduplication and predictive detection to catch issues early.
+- Diagnoser — Pulls context from logs, traces, and deployments, then uses LLM reasoning to build a causal hypothesis for the root cause.
+- Remediator — Maps a diagnosis onto a runbook knowledge base, then selects, parameterizes, and executes actions such as restarts, rollbacks, or scaling.
+- Safety — Enforces policy, computes blast radius, rate-limits actions, and opens human approval gates for high-risk remediations.
+- Orchestrator — Owns the incident FSM, routes work between agents, manages timeouts and escalation, and builds the incident timeline.
+- Learner — Vectorizes past incidents into a store and uses RAG plus pattern recognition to recommend runbooks that previously worked on similar failures.
+
+**System Architecture**
+
+![SRE Agent Swarm architecture](/sre_agent_architecture.png)
+
+- Messaging Layer: NATS JetStream carries a structured \`AgentMessage\` envelope (message ID, correlation ID keyed to the incident, source agent, payload, context) across four streams — \`AGENTS\`, \`INCIDENTS\`, \`HUMAN\`, and \`BUSINESS\`.
+- Observability Layer: Prometheus for metrics, Loki for logs, Tempo for traces, and AlertManager — the signal sources the Observer draws on.
+- Persistence Layer: PostgreSQL for incident state, Redis for caching and sessions, Elasticsearch for search, and ChromaDB as the Learner's vector store.
+- Application Layer: A ten-service microservices playground behind an Nginx API gateway, spanning FastAPI, Go/Gin, Node.js, and Django.
+- Human Interface: A React dashboard backed by FastAPI for reviewing incidents, inspecting timelines, and approving gated actions.
+
+**Incident Lifecycle**
+
+Incidents move through a formal finite state machine: \`detecting\` → \`diagnosing\` → \`proposing_remediation\` → \`safety_review\` → \`executing\` → \`verifying\` → \`resolved\` → \`closed\`. The FSM includes retry loops for failed remediation and verification, a \`pending_human_approval\` state the Safety agent can force, and escalation paths when diagnosis or repair exceeds its time budget.
+
+**Key Challenges**
+
+- Designing a message envelope and correlation scheme that keeps six independent agents coherent about a single incident.
+- Encoding "is this action safe to take automatically?" as something computable — blast radius, policy rules, and rate limits rather than a judgment call.
+- Making an autonomous remediation loop fail safe: every path through the FSM has to terminate, escalate, or hand back to a human.
+- Constraining LLM reasoning to produce hypotheses that map onto concrete, executable runbook actions.
+- Building failure injection realistic enough that the swarm's detection and diagnosis could actually be evaluated.
+
+**Key Learnings**
+
+- Multi-agent system design — role decomposition, message-driven coordination, and avoiding a single orchestrating bottleneck.
+- Event-driven architecture with NATS JetStream, including stream design and durable consumers.
+- The full observability stack and how metrics, logs, and traces complement each other during diagnosis.
+- Modeling long-running workflows as explicit state machines instead of implicit control flow.
+- Retrieval-augmented generation applied to operational history rather than documents.
+- Human-in-the-loop design: where autonomy should stop and approval should begin.
+
+**Impact**
+
+- Built an end-to-end autonomous incident response pipeline spanning detection, diagnosis, remediation, safety review, and learning across six agents.
+- Delivered a complete testbed — microservices playground, observability stack, and chaos scenarios for CPU spikes, memory leaks, network partitions, and database overload.
+- Backed the system with 63 test suites across the agent and service layers.
+`,
+    tech: [
+      "Python",
+      "FastAPI",
+      "NATS JetStream",
+      "PostgreSQL",
+      "Redis",
+      "ChromaDB",
+      "Prometheus",
+      "Grafana",
+      "Loki",
+      "Tempo",
+      "Docker",
+      "React",
+      "LLM Agents",
+      "RAG",
+    ],
+    github: "https://github.com/xd-sarthak/sre-agent",
+    year: "2026",
+    ongoing: true,
+  },
+  {
     slug: "miniDB",
     name: "miniDB — Relational Database Engine",
     description:
@@ -98,51 +387,70 @@ The project implements the complete database pipeline including storage manageme
     ongoing: true,
   },
   {
-    slug: "distributed-task-queue",
-    name: "Distributed Task Queue",
+    slug: "procwatch-process-monitor",
+    name: "procwatch — Linux Process Monitor Daemon",
     description:
-      "A high-performance, educational distributed task queue built with Go, Redis, and Next.js, featuring priority queuing, delayed tasks, worker state visualization, and high-density metrics.",
-    longDescription: `A high-performance, educational distributed task queue built with Go, Redis, and Next.js. This system is designed to provide full visibility into distributed task processing, showcasing a robust backend architecture paired with a real-time reactive dashboard.
+      "A C++17 Linux process monitor daemon that scrapes /proc directly, streams live process telemetry over TCP as newline-delimited JSON, and renders it in an ncurses client — built with no dependencies beyond pthreads and ncurses.",
+    longDescription: `
+procwatch is a Linux process monitor written from scratch in C++17 to understand how tools like \`top\` and \`htop\` actually get their numbers.
 
-It provides a production-inspired queue model to safely manage high-concurrency background workloads, with detailed telemetry showing exactly what tasks are doing at any microsecond.
+Instead of shelling out to system utilities, the daemon reads the kernel's \`/proc\` filesystem directly, derives CPU usage from tick deltas, and streams complete snapshots to any number of connected clients over a plain TCP socket. A separate ncurses client consumes that stream and renders a live, sortable process table.
+
+The project uses no external libraries — no JSON parser, no networking framework, no \`popen\` or \`system()\` calls. Everything from the wire format to the fan-out broker is hand-written against POSIX APIs.
 
 **Core Features**
-- Robust Go Backend: Implements an at-least-once delivery queue using Go and Redis with priority queuing, delayed task scheduling, retries & Dead Letter Queues (DLQ) for failed jobs, and dynamic worker pool management.
-- Real-time Next.js Dashboard: A beautifully designed frontend to visualize live task flow pipelines, real-time worker status (idle/busy/offline), activity logs tracking exactly what stage tasks are in, and high-density metrics and success rates.
-- Docker Orchestrated: Multi-container workspace setup for instantaneous local development.
+
+- Direct \`/proc\` scraping of \`stat\`, \`status\`, and \`fd/\` for PID, name, state, CPU%, RSS, thread count, and open file descriptors.
+- Delta-based CPU accounting using \`utime\`/\`stime\` ticks, monotonic wall time, and \`_SC_CLK_TCK\`.
+- Thread-safe process store keeping the latest snapshot per PID behind a \`pthread_rwlock_t\`.
+- Alert engine with configurable CPU and memory thresholds, requiring three consecutive high-CPU ticks before firing to suppress transient spikes.
+- Fan-out broker serializing snapshot batches and alerts as newline-delimited JSON, with hand-rolled JSON escaping.
+- TCP streaming server on a configurable port with non-blocking sends, dead-connection reaping, and \`SIGPIPE\` ignored at the daemon level.
+- ncurses TUI client with CPU-based row coloring, live sorting by CPU / memory / PID, reverse ordering, recent alerts, host info, and uptime.
 
 **System Architecture**
 
-![dist-task-queue architecture](/dist_task_queue_architecture.png)
+![procwatch architecture](/procwatch_architecture.png)
 
-The task queue is structured as an asynchronous messaging and processing pipeline:
-- Backend (Go): Exposes a clean REST API on port 8080. Manages the worker pool lifecycle, orchestrating concurrent worker routines that safely dequeue, process, and transition tasks.
-- Broker & State Store (Redis 7): Serves as the high-throughput message broker. Uses Redis List structures for FIFO/LIFO queues, ZSETs (Sorted Sets) for delay queues, and Hash maps for maintaining worker heartbeat and state metadata.
-- Frontend Dashboard (Next.js 16 + React 19 + TailwindCSS v4): Streams state transitions directly to the browser, displaying reactive metrics, system health, and worker lifecycles.
-
-**Design Decisions**
-- At-Least-Once Delivery: Uses Redis transaction mechanisms to ensure tasks are only acknowledged and popped once workers have safely finished processing, preventing task loss during crashes.
-- Dynamic Worker Registry: Workers announce themselves to Redis on startup and maintain an active heartbeat. If a worker goes offline, its state is garbage collected, and remaining tasks are re-queued.
-- High-Density React dashboard: React 19 concurrent features keep the dashboard responsive even under high-frequency server-sent updates.
+- Scraper Thread: Enumerates numeric directories under \`/proc\`, parses each process, and skips PIDs that vanish mid-scan.
+- ProcessStore: Reader-writer-locked map of the latest snapshot per PID, allowing concurrent readers.
+- AlertEngine: Evaluates threshold rules against the store on its own interval and publishes \`Alert\` events.
+- Broker: Receives snapshot batches and alerts, serializes them to newline-delimited JSON, and fans them out to every connected client.
+- TCPServer: Accepts clients on :9876 and pushes the JSON stream downstream.
+- Client: A separate binary that reads the stream on a dedicated pthread and renders the ncurses table.
 
 **Key Challenges**
-- Atomic Dequeue Operations: Preventing race conditions when multiple concurrent workers pull from the priority queue. Solved by implementing Redis Lua scripts for atomic search, lock, and pop operations.
-- Accurate Delayed Scheduling: Designing a low-overhead ticker routine in Go that periodically transfers ready tasks from the Redis delayed set into the active processing queue without creating execution lag.
-- State Reconciliation: Keeping the real-time dashboard UI perfectly synchronized with database states under thousands of short-lived task transitions.
+
+- Computing accurate CPU percentages from raw kernel tick counters rather than a pre-computed value.
+- Handling processes that exit between listing \`/proc\` and reading their files, without corrupting a scan.
+- Coordinating four long-lived threads (scraper, alert engine, broker, TCP server) around shared state with correct lock granularity.
+- Writing a correct JSON serializer — including string escaping — with no library, and streaming it in a framing format a client can parse incrementally.
+- Keeping a slow or disconnected client from stalling the broadcast path.
 
 **Key Learnings**
-- Lua Scripting in Redis: Offloading state transition logic directly to Redis using Lua scripts guarantees atomicity and dramatically reduces round-trip network times.
-- Go Concurrency Patterns: Channels and sync primitives in Go provide excellent control for building robust, self-healing worker pools.
-- Real-time UX Strategy: Buffering high-frequency state updates on the frontend prevents UI thread blocking and preserves rendering performance.
 
-**Impact and Results**
-- Zero Task Loss: Achieved reliable execution with automatic retry logic and safe DLQ fallback for persistent errors.
-- Sub-millisecond Dequeue: Dequeue latency remains under 1ms under high concurrent worker pool tests.
-- High Observability: Delivered a beautiful dashboard that makes complex distributed system patterns instantly understandable.`,
-    tech: ["Go", "Redis", "Next.js", "React", "Tailwind CSS", "Docker"],
-    github: "https://github.com/xd-sarthak/dtq",
+- The layout and semantics of the \`/proc\` filesystem as a kernel interface.
+- POSIX threading primitives: \`pthread_create\`, mutexes, and reader-writer locks, plus RAII lock guards in C++.
+- Socket programming fundamentals — partial writes, \`write_all\` loops, broken pipes, and signal handling in a daemon.
+- Designing a pub/sub fan-out layer that decouples producers from a variable number of consumers.
+- Building a responsive terminal UI with ncurses on top of an asynchronous data source.
+
+**Impact**
+
+- Delivered a working system-monitoring stack — daemon, wire protocol, and client — in roughly 1,700 lines of dependency-free C++.
+- Demonstrated low-level systems programming across the kernel interface, threading, and network layers.
+`,
+    tech: [
+      "C++17",
+      "CMake",
+      "pthreads",
+      "ncurses",
+      "Linux /proc",
+      "TCP Sockets",
+      "Systems Programming",
+    ],
+    github: "https://github.com/xd-sarthak/syspulse",
     year: "2026",
-    featured: true,
   },
   {
     slug: "llm-api-gateway",
@@ -203,6 +511,53 @@ The gateway is structured as a middleware pipeline:
 `,
     tech: ["Go", "Next.js", "PostgreSQL", "Redis"],
     github: "https://github.com/xd-sarthak/llm-api-gateway",
+    year: "2026",
+    featured: true,
+  },
+  {
+    slug: "distributed-task-queue",
+    name: "Distributed Task Queue",
+    description:
+      "A high-performance, educational distributed task queue built with Go, Redis, and Next.js, featuring priority queuing, delayed tasks, worker state visualization, and high-density metrics.",
+    longDescription: `A high-performance, educational distributed task queue built with Go, Redis, and Next.js. This system is designed to provide full visibility into distributed task processing, showcasing a robust backend architecture paired with a real-time reactive dashboard.
+
+It provides a production-inspired queue model to safely manage high-concurrency background workloads, with detailed telemetry showing exactly what tasks are doing at any microsecond.
+
+**Core Features**
+- Robust Go Backend: Implements an at-least-once delivery queue using Go and Redis with priority queuing, delayed task scheduling, retries & Dead Letter Queues (DLQ) for failed jobs, and dynamic worker pool management.
+- Real-time Next.js Dashboard: A beautifully designed frontend to visualize live task flow pipelines, real-time worker status (idle/busy/offline), activity logs tracking exactly what stage tasks are in, and high-density metrics and success rates.
+- Docker Orchestrated: Multi-container workspace setup for instantaneous local development.
+
+**System Architecture**
+
+![dist-task-queue architecture](/dist_task_queue_architecture.png)
+
+The task queue is structured as an asynchronous messaging and processing pipeline:
+- Backend (Go): Exposes a clean REST API on port 8080. Manages the worker pool lifecycle, orchestrating concurrent worker routines that safely dequeue, process, and transition tasks.
+- Broker & State Store (Redis 7): Serves as the high-throughput message broker. Uses Redis List structures for FIFO/LIFO queues, ZSETs (Sorted Sets) for delay queues, and Hash maps for maintaining worker heartbeat and state metadata.
+- Frontend Dashboard (Next.js 16 + React 19 + TailwindCSS v4): Streams state transitions directly to the browser, displaying reactive metrics, system health, and worker lifecycles.
+
+**Design Decisions**
+- At-Least-Once Delivery: Uses Redis transaction mechanisms to ensure tasks are only acknowledged and popped once workers have safely finished processing, preventing task loss during crashes.
+- Dynamic Worker Registry: Workers announce themselves to Redis on startup and maintain an active heartbeat. If a worker goes offline, its state is garbage collected, and remaining tasks are re-queued.
+- High-Density React dashboard: React 19 concurrent features keep the dashboard responsive even under high-frequency server-sent updates.
+
+**Key Challenges**
+- Atomic Dequeue Operations: Preventing race conditions when multiple concurrent workers pull from the priority queue. Solved by implementing Redis Lua scripts for atomic search, lock, and pop operations.
+- Accurate Delayed Scheduling: Designing a low-overhead ticker routine in Go that periodically transfers ready tasks from the Redis delayed set into the active processing queue without creating execution lag.
+- State Reconciliation: Keeping the real-time dashboard UI perfectly synchronized with database states under thousands of short-lived task transitions.
+
+**Key Learnings**
+- Lua Scripting in Redis: Offloading state transition logic directly to Redis using Lua scripts guarantees atomicity and dramatically reduces round-trip network times.
+- Go Concurrency Patterns: Channels and sync primitives in Go provide excellent control for building robust, self-healing worker pools.
+- Real-time UX Strategy: Buffering high-frequency state updates on the frontend prevents UI thread blocking and preserves rendering performance.
+
+**Impact and Results**
+- Zero Task Loss: Achieved reliable execution with automatic retry logic and safe DLQ fallback for persistent errors.
+- Sub-millisecond Dequeue: Dequeue latency remains under 1ms under high concurrent worker pool tests.
+- High Observability: Delivered a beautiful dashboard that makes complex distributed system patterns instantly understandable.`,
+    tech: ["Go", "Redis", "Next.js", "React", "Tailwind CSS", "Docker"],
+    github: "https://github.com/xd-sarthak/dtq",
     year: "2026",
     featured: true,
   },

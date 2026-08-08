@@ -11,7 +11,7 @@ export default function HeaderIntro() {
       <div className="lg:col-span-3 space-y-6 sm:space-y-8">
         <div className="space-y-3 sm:space-y-4">
           <div className="text-xs sm:text-sm text-emerald-400/80 font-mono tracking-widest uppercase">
-            SOFTWARE DEVELOPER / {new Date().getFullYear()}
+            BACKEND & SYSTEMS ENGINEER / {new Date().getFullYear()}
           </div>
           <h1 className="text-6xl sm:text-7xl lg:text-[5.5rem] font-medium tracking-tight leading-[1.1] sm:leading-[1.1] lg:leading-[1.1]">
             <span className="block text-foreground">Sarthak</span>
@@ -21,11 +21,15 @@ export default function HeaderIntro() {
 
         <div className="space-y-6 max-w-md mt-4">
           <p className="text-lg text-muted-foreground leading-relaxed">
-            Software Developer building fast and scalable digital products using{" "}
-            <span className="text-foreground">Next.js</span>,{" "}
-            <span className="text-foreground">TypeScript</span>,{" "}
-            <span className="text-foreground">Node.js</span>, and{" "}
-            <span className="text-foreground">PostgreSQL</span>.
+            I build the layers most developers treat as a black box:{" "}
+            <span className="text-foreground">databases</span>,{" "}
+            <span className="text-foreground">servers</span>, and{" "}
+            <span className="text-foreground">distributed systems</span>, built
+            from first principles in <span className="text-foreground">Go</span>,{" "}
+            <span className="text-foreground">C++</span>, and{" "}
+            <span className="text-foreground">Python</span>, alongside
+            production apps in{" "}
+            <span className="text-foreground">TypeScript</span>.
             <Tooltip>
               <TooltipTrigger asChild>
                 <Link href="/about-me" className="underline underline-offset-4 ml-1 text-emerald-400/80 hover:text-emerald-400 transition-colors">
@@ -146,9 +150,9 @@ export default function HeaderIntro() {
             WHAT I DO
           </div>
           <div className="space-y-3">
-            <h2 className="text-xl sm:text-2xl text-foreground font-medium">Building Products</h2>
+            <h2 className="text-xl sm:text-2xl text-foreground font-medium">Systems From Scratch</h2>
             <p className="text-muted-foreground">
-              From idea → architecture → development → launch
+              From storage engines and wire protocols → APIs → shipped products
             </p>
           </div>
         </div>
@@ -157,13 +161,13 @@ export default function HeaderIntro() {
           <div className="text-xs sm:text-sm text-emerald-400/80 font-mono tracking-widest uppercase">FOCUS</div>
           <div className="flex flex-wrap gap-2.5">
             {[
-              "Full-Stack Development",
-              "Next.js / TypeScript",
-              "Golang / Redis",
-              "AI & RAG Infrastructure",
+              "Databases & Storage Engines",
+              "Distributed Systems",
+              "Go / C++ Systems Programming",
+              "AI Agents & RAG Infrastructure",
               "API Design & Async Queues",
-              "Docker & Devops",
               "Observability (Prometheus/Grafana)",
+              "Full-Stack (Next.js / TypeScript)",
             ].map((service) => (
               <span
                 key={service}
